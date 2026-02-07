@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RechtFlott</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ── Mode Selection ── -->
+    <section class="mode-screen" id="modeScreen">
+      <div class="mode-card">
+        <div class="mode-logo">⌨</div>
+        <h1>RechtFlott</h1>
+        <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
+        <div class="mode-actions">
+          <button class="btn btn--secondary" type="button" data-mode="learning">
+            <span class="btn-icon">📖</span>
+            <span>
+              <strong>Lernmodus</strong>
+              <small>Tastatur-Grundlagen in Kapiteln</small>
+            </span>
+          </button>
+          <button class="btn btn--primary" type="button" data-mode="legal">
+            <span class="btn-icon">⚖</span>
+            <span>
+              <strong>Juristische Begriffe</strong>
+              <small>Begriffe, Abkürzungen, Definitionen</small>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── App ── -->
+    <div class="app hidden" id="app">
+      <!-- Top bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="topbar-brand" id="changeMode" type="button">⌨ RechtFlott</button>
+          <span class="chip" id="modeChip">Lernmodus</span>
+        </div>
+        <div class="topbar-stats" id="statsBar">
+          <div class="stat"><span class="stat-val" id="wpm">0</span><span class="stat-lbl">WPM</span></div>
+          <div class="stat"><span class="stat-val" id="accuracy">100%</span><span class="stat-lbl">Genauigkeit</span></div>
+          <div class="stat"><span class="stat-val" id="errors">0</span><span class="stat-lbl">Fehler</span></div>
+          <div class="stat"><span class="stat-val" id="time">0:00</span><span class="stat-lbl">Zeit</span></div>
+          <div class="stat stat--best hidden" id="bestStat">
+            <span class="stat-val" id="bestWpm">–</span>
+            <span class="stat-lbl">Rekord</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode">🌙</button>
+          <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus">⌨</button>
+        </div>
+      </header>
+
+      <!-- Streak / daily goal banner -->
+      <div class="streak-bar" id="streakBar">
+        <span id="streakText">🔥 0 Tage Streak</span>
+        <span class="streak-sep">·</span>
+        <span class="streak-goal" id="streakGoal">Ziel: 5 Lektionen heute (0/5)</span>
+      </div>
+
+      <!-- Main layout -->
+      <main class="main" id="mainArea">
+        <!-- Sidebar (drawer) -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-head">
+            <h2>Lektionen</h2>
+            <button class="icon-btn sidebar-close" id="closeSidebar" type="button">✕</button>
+          </div>
+          <div class="tabs hidden" id="legalToggle">
+            <button class="tab active" type="button" data-variant="mix">Mix</button>
+            <button class="tab" type="button" data-variant="terms">Begriffe</button>
+            <button class="tab" type="button" data-variant="abbrev">Abk.</button>
+            <button class="tab" type="button" data-variant="definitions">Defs.</button>
+            <button class="tab" type="button" data-variant="daily">Daily</button>
+          </div>
+          <div class="tabs tabs--sm hidden" id="rechtsgebietToggle">
+            <button class="tab active" type="button" data-rg="all">Alle</button>
+            <button class="tab" type="button" data-rg="Strafrecht">StR</button>
+            <button class="tab" type="button" data-rg="Zivilrecht">ZR</button>
+            <button class="tab" type="button" data-rg="Öffentliches Recht">ÖR</button>
+          </div>
+          <div class="sidebar-filters">
+            <input id="lessonSearch" class="input" type="text" placeholder="Suchen…" />
+            <select id="chapterSelect" class="input hidden" aria-label="Kapitel"></select>
+          </div>
+          <div class="lesson-list" id="lessonList"></div>
+          <div class="load-more">
+            <button class="btn btn--ghost btn--sm" id="loadMore">Mehr laden</button>
+          </div>
+        </aside>
+
+        <!-- Trainer (center stage) -->
+        <section class="trainer" id="trainerPanel">
+          <div class="trainer-top">
+            <button class="btn btn--ghost btn--sm" id="openSidebar" type="button">☰ Lektionen</button>
+            <div class="progress"><div class="progress-fill" id="progressBar"></div></div>
+            <div class="trainer-actions">
+              <button id="restart" class="btn btn--ghost btn--sm">↻ Neu</button>
+              <button id="shuffle" class="btn btn--ghost btn--sm">🔀</button>
+            </div>
+          </div>
+
+          <!-- Definition panel -->
+          <div class="def-panel hidden" id="definitionPanel">
+            <div class="def-head">
+              <div><span class="def-label">Begriff</span><span class="rg-badge" id="rgBadge"></span><h3 id="definitionTerm">–</h3></div>
+              <button class="btn btn--ghost btn--sm" id="toggleDefinition" type="button">Anzeigen</button>
+            </div>
+            <p class="def-body hidden" id="definitionText"></p>
+          </div>
+
+          <!-- Typing zone -->
+          <div class="typing-zone" id="typingArea" aria-live="polite"></div>
+          <input id="typingInput" class="sr-only" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+          <!-- Completion overlay -->
+          <div class="completion" id="completion">
+            <div class="completion-card">
+              <div class="completion-icon" id="completionIcon">🎯</div>
+              <h3 id="completionTitle">Fertig!</h3>
+              <p id="completionSub">Saubere Runde.</p>
+              <div class="completion-stats">
+                <div class="cs"><span class="cs-val" id="cWpm">0</span><span class="cs-lbl">WPM</span></div>
+                <div class="cs"><span class="cs-val" id="cAcc">100%</span><span class="cs-lbl">Genauigkeit</span></div>
+                <div class="cs"><span class="cs-val" id="cTime">0:00</span><span class="cs-lbl">Zeit</span></div>
+              </div>
+              <div class="completion-badge hidden" id="completionBadge">🏆 Neuer Rekord!</div>
+              <div class="completion-actions">
+                <button id="nextLesson" class="btn btn--primary">Nächste Lektion →</button>
+                <button id="repeatLesson" class="btn btn--ghost">Wiederholen</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tips">
+            <span>💡 Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
+          </div>
+        </section>
+      </main>
+
+      <!-- Keyboard (collapsible) -->
+      <section class="keyboard-wrap" id="keyboardWrap">
+        <div class="finger-hint" id="fingerHint"></div>
+        <div class="keyboard-head">
+          <span class="keyboard-title">Tastatur & Finger</span>
+          <div class="finger-legend" id="fingerLegend"></div>
+        </div>
+        <div id="keyboard" class="keyboard-grid" aria-hidden="true"></div>
+      </section>
+
+      <footer class="footer">Kein Tracking · Alles lokal · Erstellt für das E-Examen</footer>
+    </div>
+
+    <canvas id="confetti" class="confetti-canvas"></canvas>
+    <script src="app.js"></script>
+  </body>
+</html>
