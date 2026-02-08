@@ -385,12 +385,34 @@ function updateDefPanel() {
 function renderText() {
   typingArea.innerHTML = "";
   if (!activeLesson) return;
-  activeLesson.text.split("").forEach((char, i) => {
-    const span = document.createElement("span");
-    span.textContent = char;
-    if (i === 0) span.classList.add("active");
-    typingArea.appendChild(span);
-  });
+  // Group characters into word wrappers so browsers only break at spaces
+  const text = activeLesson.text;
+  let wordWrapper = null;
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const isSpace = /\s/.test(char);
+    if (!isSpace) {
+      if (!wordWrapper) {
+        wordWrapper = document.createElement('span');
+        wordWrapper.className = 'word';
+        typingArea.appendChild(wordWrapper);
+      }
+      const cspan = document.createElement('span');
+      cspan.textContent = char;
+      cspan.dataset.char = char;
+      if (typingArea.childElementCount === 0 || (typingArea.firstChild === wordWrapper && wordWrapper.childElementCount === 0 && i === 0)) cspan.classList.add('active');
+      wordWrapper.appendChild(cspan);
+    } else {
+      // close current word wrapper
+      wordWrapper = null;
+      const sspan = document.createElement('span');
+      sspan.className = 'space';
+      sspan.dataset.char = ' ';
+      // Use a non-breaking space so the span always produces visible width
+      sspan.textContent = '\u00A0';
+      typingArea.appendChild(sspan);
+    }
+  }
 }
 
 function resetSession() {
@@ -437,7 +459,7 @@ function updateStats() {
 
 function updateTypingFeedback() {
   const typed = typingInput.value.split("");
-  const spans = typingArea.querySelectorAll("span");
+  const spans = typingArea.querySelectorAll("[data-char]");
   errors = 0;
   let hadError = false;
 
@@ -448,7 +470,7 @@ function updateTypingFeedback() {
       if (i === typed.length) span.classList.add("active");
       return;
     }
-    if (ch === span.textContent) {
+    if (ch === span.dataset.char) {
       span.classList.add("correct");
     } else {
       span.classList.add("incorrect");
@@ -720,22 +742,25 @@ function shortenDef(text) {
   return s.length > 140 ? `${s.slice(0, 140).trim()}…` : `${s}.`;
 }
 
-// ── CSV Parsing ──────────────────────────────
+// ── CSV Parsing (robust, RFC4180) ───────────
 function parseCSV(text, delim = ";") {
   const rows = [];
-  let current = [], field = "", inQ = false;
+  let row = [], field = '', inQuotes = false;
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === '"') {
-      if (inQ && text[i+1] === '"') { field += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === delim && !inQ) {
-      current.push(field); field = "";
-    } else if ((ch === "\n" || ch === "\r") && !inQ) {
-      if (field.length || current.length) { current.push(field); rows.push(current); current = []; field = ""; }
-    } else { field += ch; }
+      if (inQuotes && text[i+1] === '"') { field += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === delim && !inQuotes) {
+      row.push(field); field = '';
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (ch === '\r' && text[i+1] === '\n') i++; // handle \r\n
+      row.push(field); rows.push(row); row = []; field = '';
+    } else {
+      field += ch;
+    }
   }
-  if (field.length || current.length) { current.push(field); rows.push(current); }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
   return rows;
 }
 

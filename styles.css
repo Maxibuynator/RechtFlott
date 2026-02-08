@@ -387,13 +387,15 @@ body {
   border-radius: var(--radius-sm);
   font-size: 14px; line-height: 1.5;
   color: var(--text);
+  white-space: pre-wrap;
 }
 
 /* ── Typing Zone ── */
 .typing-zone {
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
+  display: block;
+  /* Use normal inline wrapping for characters/spans to avoid single-letter wraps */
+  word-break: normal;
+  overflow-wrap: normal;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -406,6 +408,13 @@ body {
   transition: border-color var(--transition), box-shadow var(--transition);
   box-shadow: var(--shadow);
   position: relative;
+  white-space: pre-wrap;
+}
+
+/* Prevent words from breaking between individual character spans by grouping words */
+.typing-zone .word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .typing-zone:focus-within {
@@ -414,6 +423,9 @@ body {
 }
 
 .typing-zone span { opacity: .35; transition: all .1s ease; }
+
+/* Ensure whitespace spans have visible width even if rendering issues occur */
+/* (removed temporary space-span width hack) */
 
 .typing-zone span.active {
   opacity: 1;
