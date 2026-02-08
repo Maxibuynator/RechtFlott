@@ -2,9 +2,13 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <!-- Optional test password: set this to enable a simple client-side gate (clear to disable) -->
+    <meta name="passwort" content="jura-2026" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RechtFlott</title>
     <link rel="stylesheet" href="styles.css" />
+      <meta name="Jura-2026" content="Jura2026" />
+      <meta name="site-password" content="Jura2026" />
   </head>
   <body>
     <!-- ── Mode Selection ── -->
@@ -157,10 +161,62 @@
         <div id="keyboard" class="keyboard-grid" aria-hidden="true"></div>
       </section>
 
-      <footer class="footer">Kein Tracking · Alles lokal · Erstellt für das E-Examen</footer>
+      <footer class="footer">Kein Tracking · Alles lokal · Erstellt für das E-Examen · <a href="impressum.html">Impressum</a></footer>
+    </div>
+
+    <!-- Simple client-side password gate for informal testing -->
+    <div id="pwGate" class="pw-gate hidden" aria-hidden="true">
+      <div class="pw-panel">
+        <h2>Zugang geschützt</h2>
+        <p>Bitte Passwort eingeben, um die Seite zu sehen.</p>
+        <input id="pwInput" type="password" placeholder="Passwort" />
+        <div class="pw-actions">
+          <button id="pwOk" class="btn btn--primary">Öffnen</button>
+          <button id="pwCancel" class="btn btn--ghost">Abbrechen</button>
+        </div>
+        <p class="pw-hint">Hinweis: Diese Sperre ist nur für informelle Tests geeignet und nicht hochsicher.</p>
+      </div>
     </div>
 
     <canvas id="confetti" class="confetti-canvas"></canvas>
+    <div class="global-impressum"><a href="impressum.html">Impressum</a></div>
+    <script>
+      // Lightweight client-side gate: reads meta[name=site-password]. If empty, gate is disabled.
+      (function(){
+        // Support either `site-password` or legacy/custom meta name `Jura-2026`
+        const meta = document.querySelector('meta[name="site-password"], meta[name="Jura-2026"]');
+        if (!meta) return;
+        const pwd = (meta.content || "").toString();
+        if (!pwd) return; // disabled
+
+        const pwGate = document.getElementById('pwGate');
+        const pwInput = document.getElementById('pwInput');
+        const pwOk = document.getElementById('pwOk');
+        const pwCancel = document.getElementById('pwCancel');
+
+        function unlock() {
+          pwGate.classList.add('hidden');
+          pwGate.setAttribute('aria-hidden','true');
+          document.getElementById('app').classList.remove('hidden');
+        }
+
+        function showGate(){
+          // Always require password on every load — do not persist unlock state.
+          pwGate.classList.remove('hidden');
+          pwGate.setAttribute('aria-hidden','false');
+        }
+
+        pwOk.addEventListener('click', () => {
+          if (pwInput.value === pwd) unlock(); else { pwInput.value = ''; pwInput.focus(); }
+        });
+        pwInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') pwOk.click(); });
+        pwCancel.addEventListener('click', () => { window.location.href = 'about:blank'; });
+
+        // initially hide app until unlocked (always required)
+        document.getElementById('app').classList.add('hidden');
+        showGate();
+      })();
+    </script>
     <script src="app.js?v=3"></script>
   </body>
 </html>
