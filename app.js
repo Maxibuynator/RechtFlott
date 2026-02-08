@@ -9,11 +9,36 @@ const modes = {
     name: "Lernmodus",
     chip: "Lernmodus",
     lessons: [
-      { id: "ch-1", chapter: "Kapitel 1", title: "Grundstellung", description: "ASDF JKLÖ im Gleichgewicht.", text: "asdf jklö asdf jklö fff jjj ddd kkk sss lll ööö asdf jklö" },
-      { id: "ch-2", chapter: "Kapitel 2", title: "Obere Reihe", description: "QWER UIOP mit ruhiger Hand.", text: "qwer uiop qwer uiop we ri op qu pw er io qwer uiop" },
-      { id: "ch-3", chapter: "Kapitel 3", title: "Untere Reihe", description: "ZXCV NM sauber tippen.", text: "zxcv nm zxcv nm cv nm zx cv nm zxcv nm" },
-      { id: "ch-4", chapter: "Kapitel 4", title: "Zahlen", description: "Reihe 1–0 ohne Stress.", text: "1 2 3 4 5 6 7 8 9 0 123 456 789 10" },
-      { id: "ch-5", chapter: "Kapitel 5", title: "Wort Mix", description: "Kurze Wörter, gute Taktung.", text: "fokus ruhe tempo tastatur finger tipp ziel genau" },
+      { id: "ch-1", chapter: "Kapitel 1", title: "Finger-Akklimatisierung: A", description: "Gewöhne den Finger an die Taste 'a' (5er-Gruppen).", text: "aaaaa aaaaa aaaaa aaaaa aaaaa" },
+      { id: "ch-2", chapter: "Kapitel 2", title: "Finger-Akklimatisierung: S", description: "Gewöhne den Finger an die Taste 's' (5er-Gruppen).", text: "sssss sssss sssss sssss sssss" },
+      { id: "ch-3", chapter: "Kapitel 3", title: "Finger-Akklimatisierung: D", description: "Gewöhne den Finger an die Taste 'd' (5er-Gruppen).", text: "ddddd ddddd ddddd ddddd ddddd" },
+      { id: "ch-4", chapter: "Kapitel 4", title: "Finger-Akklimatisierung: F", description: "Gewöhne den Finger an die Taste 'f' (5er-Gruppen).", text: "fffff fffff fffff fffff fffff" },
+      { id: "ch-5", chapter: "Kapitel 5", title: "Finger-Akklimatisierung: J", description: "Gewöhne den Finger an die Taste 'j' (5er-Gruppen).", text: "jjjjj jjjjj jjjjj jjjjj jjjjj" },
+      { id: "ch-6", chapter: "Kapitel 6", title: "Finger-Akklimatisierung: K", description: "Gewöhne den Finger an die Taste 'k' (5er-Gruppen).", text: "kkkkk kkkkk kkkkk kkkkk kkkkk" },
+      { id: "ch-7", chapter: "Kapitel 7", title: "Finger-Akklimatisierung: L", description: "Gewöhne den Finger an die Taste 'l' (5er-Gruppen).", text: "lllll lllll lllll lllll lllll" },
+      { id: "ch-8", chapter: "Kapitel 8", title: "Finger-Akklimatisierung: Ö", description: "Gewöhne den Finger an die Taste 'ö' (5er-Gruppen).", text: "ööööö ööööö ööööö ööööö ööööö" },
+      { id: "ch-9", chapter: "Kapitel 9", title: "Grundstellung — Fingerfindung", description: "ASDF · JKLÖ — bewusst langsam.", text: "asdf jklö asdf jklö asdf jklö" },
+      { id: "ch-7", chapter: "Kapitel 7", title: "Grundstellung — Reihenfolge", description: "Ein Finger nach dem anderen.", text: "a s d f  j k l ö  a s d f  j k l ö" },
+      { id: "ch-8", chapter: "Kapitel 8", title: "Grundstellung — Wechsel", description: "Links ↔ Rechts im Takt.", text: "as df jk lö as df jk lö as df jk lö" },
+      { id: "ch-9", chapter: "Kapitel 9", title: "Links-Rechts-Alternation", description: "Wechselschlag für Rhythmus.", text: "fd jk fd jk fd jk fd jk" },
+      { id: "ch-10", chapter: "Kapitel 10", title: "Obere Reihe — Basis", description: "Q W E R · U I O P — ruhig.", text: "qwer uiop qwer uiop qwer uiop" },
+      { id: "ch-11", chapter: "Kapitel 11", title: "Obere Reihe — Kombinationen", description: "Kurzfolgen üben.", text: "qw er ui op qw er ui op qw er ui op" },
+      { id: "ch-12", chapter: "Kapitel 12", title: "Untere Reihe — Basis", description: "Z X C V · N M — sauber tippen.", text: "zxcv nm zxcv nm zxcv nm" },
+      { id: "ch-13", chapter: "Kapitel 13", title: "Untere Reihe — Kombinationen", description: "Wechselübungen.", text: "zx cv nm zx cv nm zx cv nm" },
+      { id: "ch-14", chapter: "Kapitel 14", title: "Zahlen — Grundsätze", description: "Reihe 1–0 langsam.", text: "1 2 3 4 5 6 7 8 9 0 1 2 3 4 5" },
+      { id: "ch-15", chapter: "Kapitel 15", title: "Zahlen — Kombinationen", description: "Mehrstellige Zahlen üben.", text: "12 34 56 78 90 123 456 789 10 11" },
+      { id: "ch-16", chapter: "Kapitel 16", title: "Punkt, Komma, Bindestrich", description: "Zeichensetzung üben.", text: ". , - . , - . , - . , -" },
+      { id: "ch-17", chapter: "Kapitel 17", title: "Kurze Wörter I", description: "Artikel, Pronomen, kurze Wörter.", text: "der die das und oder aber mit für von zu" },
+      { id: "ch-18", chapter: "Kapitel 18", title: "Kurze Wörter II", description: "Weitere häufige kleine Wörter.", text: "ein eine einem einer man sich hier dort jetzt bald" },
+      { id: "ch-19", chapter: "Kapitel 19", title: "Silben & Paare", description: "er en st ch — Rhythmus.", text: "er en st ch er en st ch er en st ch" },
+      { id: "ch-20", chapter: "Kapitel 20", title: "Takt & Tempo", description: "Kurze Sätze, gleichmäßig.", text: "fokus ruhe tempo tastatur finger tipp ziel genau" },
+      { id: "ch-21", chapter: "Kapitel 21", title: "Wortübergänge", description: "Wörter aneinanderreihen.", text: "haus baum auto tafel stift klingel fenster stuhl" },
+      { id: "ch-22", chapter: "Kapitel 22", title: "Längere Fingerketten", description: "Mehr Zeichen, moderates Tempo.", text: "asdf qwer zxcv jklö uiop nm , . - asdf qwer" },
+      { id: "ch-23", chapter: "Kapitel 23", title: "Feinmotorik: kleine Buchstaben", description: "Feine Bewegungen trainieren.", text: "l g k j f d s a p o i u y t r e w q" },
+      { id: "ch-24", chapter: "Kapitel 24", title: "Wortfluss", description: "Lesbarkeit bewahren.", text: "kurz langsam schnell langsam kurz langsam schnell" },
+      { id: "ch-25", chapter: "Kapitel 25", title: "Rhythmus-Drill", description: "Konstanz üben — 60s Fokus.", text: "tap tap tap tap tap tap tap tap tap tap" },
+      { id: "ch-26", chapter: "Kapitel 26", title: "Leichte juristische Begriffe I", description: "Einfache, 10‑Finger-freundliche Begriffe.", text: "klage urteil gesetz vertrag richter antrag schuld" },
+      { id: "ch-30", chapter: "Kapitel 30", title: "Leichte juristische Begriffe II", description: "Weiterer leichter Wortschatz — mit §.", text: "kläger bekannter beschluss beweis zeuge vertrag §" }
     ],
   },
   legal: {
@@ -49,6 +74,7 @@ const legalToggle    = $("legalToggle");
 const chapterSelect  = $("chapterSelect");
 const lessonSearch   = $("lessonSearch");
 const loadMoreBtn    = $("loadMore");
+const randomizeChapterBtn = $("randomizeChapterBtn");
 const keyboard       = $("keyboard");
 const fingerLegend   = $("fingerLegend");
 const keyboardWrap   = $("keyboardWrap");
@@ -191,7 +217,7 @@ const keyboardRows = [
   ["1","2","3","4","5","6","7","8","9","0","ß"],
   ["q","w","e","r","t","y","u","i","o","p","ü"],
   ["a","s","d","f","g","h","j","k","l","ö","ä"],
-  ["z","x","c","v","b","n","m",",","."],
+  ["z","x","c","v","b","n","m",",",".","-"],
   ["space"],
 ];
 
@@ -200,7 +226,7 @@ const fingerMap = {
   q:"lp",w:"lr",e:"lm",r:"li",t:"li",y:"ri",u:"ri",i:"rm",o:"rr",p:"rp",
   a:"lp",s:"lr",d:"lm",f:"li",g:"li",h:"ri",j:"ri",k:"rm",l:"rr",
   z:"lp",x:"lr",c:"lm",v:"li",b:"li",n:"ri",m:"ri",",":"rm",".":"rr",
-  "ß":"rp","ü":"rp","ö":"rp","ä":"rp",space:"thumb",
+  "-":"rr","ß":"rp","ü":"rp","ö":"rp","ä":"rp",space:"thumb",
 };
 
 const fingers = [
@@ -662,6 +688,32 @@ function buildChapterOptions() {
   });
 }
 
+function generateRandomLessonForChapter(chapter) {
+  const pool = allLessons.filter((l) => l.chapter === chapter);
+  if (!pool.length) return null;
+  // collect words from all lessons in the chapter
+  let words = [];
+  pool.forEach((p) => {
+    const w = (p.text || "").split(/\s+/).filter(Boolean);
+    words = words.concat(w);
+  });
+  if (!words.length) return null;
+  // shuffle words
+  for (let i = words.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [words[i], words[j]] = [words[j], words[i]];
+  }
+  const sample = words.slice(0, Math.min(40, words.length)).join(" ");
+  const lesson = {
+    id: `rand-${chapter.replace(/\s+/g,'-')}-${Date.now()}`,
+    chapter,
+    title: `Zufallsübung — ${chapter}`,
+    description: `Randomisierte Übung für ${chapter}`,
+    text: sample,
+  };
+  return lesson;
+}
+
 function applyFilters() {
   const chapter = chapterSelect.value || "Alle";
   const q = lessonSearch.value.trim().toLowerCase();
@@ -991,6 +1043,18 @@ function init() {
 
   lessonSearch.addEventListener("input", () => { visibleCount = PAGE_SIZE; applyFilters(); });
   chapterSelect.addEventListener("change", () => { visibleCount = PAGE_SIZE; applyFilters(); });
+  if (randomizeChapterBtn) randomizeChapterBtn.addEventListener('click', () => {
+    // determine chapter: prefer chapterSelect if visible, else current active lesson's chapter
+    const chap = (chapterSelect && !chapterSelect.classList.contains('hidden')) ? chapterSelect.value : (activeLesson ? activeLesson.chapter : null);
+    if (!chap) { alert('Wähle zuerst ein Kapitel aus (oder öffne eine Lektion).'); return; }
+    const rnd = generateRandomLessonForChapter(chap);
+    if (!rnd) { alert('Keine Lektionen für dieses Kapitel gefunden.'); return; }
+    // set as current lessons and select (keep full lesson set intact)
+    filteredLessons = [rnd];
+    currentLessons = [rnd];
+    renderLessons();
+    selectLesson(rnd);
+  });
   loadMoreBtn.addEventListener("click", () => { visibleCount += PAGE_SIZE; renderLessons(); });
 
   // Stats timer

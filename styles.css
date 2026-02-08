@@ -598,6 +598,11 @@ body.keyboard-open {
   padding-bottom: 190px;
 }
 
+/* When keyboard is open reduce sidebar height so bottom lessons remain reachable */
+body.keyboard-open .sidebar {
+  max-height: calc(100vh - 160px - 190px);
+}
+
 .keyboard-head {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 8px;
