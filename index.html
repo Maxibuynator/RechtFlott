@@ -101,6 +101,7 @@
             <div class="progress"><div class="progress-fill" id="progressBar"></div></div>
             <div class="trainer-actions">
               <button id="restart" class="btn btn--ghost btn--sm">↻ Neu</button>
+              <button id="skipLesson" class="btn btn--ghost btn--sm" title="Überspringen">⏭ Skip</button>
               <button id="shuffle" class="btn btn--ghost btn--sm">🔀</button>
             </div>
           </div>
@@ -115,7 +116,9 @@
           </div>
 
           <!-- Typing zone -->
-          <div class="typing-zone" id="typingArea" aria-live="polite"></div>
+          <div class="typing-zone" id="typingArea" aria-live="polite">
+            <span class="disclaimer">Definitionen sind KI-generiert und dienen ausschließlich als Tipphilfe. Keine Garantie auf Vollständigkeit oder inhaltliche Korrektheit.</span>
+          </div>
           <input id="typingInput" class="sr-only" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
 
           <!-- Completion overlay -->

@@ -39,24 +39,24 @@ PRICE_OUTPUT_PER_M = 0.40   # gpt-5-nano output
 SYSTEM_PROMPT = """\
 Du bist ein juristischer Fachlexikon-Autor für deutsche Jurastudierende.
 
-Aufgabe: Formuliere eine präzise Definition des gegebenen juristischen Begriffs \
-auf Deutsch, wie sie in einem Jura-Lehrbuch oder einer Falllösung im \
-Gutachtenstil stehen würde.
+Aufgabe: Schreibe eine präzise Definition des gegebenen juristischen Begriffs \
+auf Deutsch.
 
-Regeln:
-- Verwende präzise juristische Fachsprache wie in Standardlehrbüchern \
-(Medicus, Wessels/Beulke, Maurer)
-- Die Definition muss gutachtenstil-tauglich sein, also als Obersatz \
-in einer Klausur verwendbar
-- Schreibe ausschließlich in reinem Fließtext, keine Aufzählungen, \
-keine Spiegelstriche, keine Nummerierungen, keine Überschriften, \
-kein Markdown
-- Vermeide Semikolons, Doppelpunkte als Trennzeichen und Klammerzusätze \
-wo möglich
-- 1 bis 3 Sätze, maximal 350 Zeichen
-- Beginne direkt mit der Definition, ohne den Begriff zu wiederholen \
-und ohne einleitende Floskeln wie "Unter ... versteht man"
-- Der Text muss sich flüssig am Stück tippen lassen\
+STRENGE FORMATREGELN – bei Verstoß ist die Antwort unbrauchbar:
+1. Reiner Fließtext. KEINE Aufzählungen, Spiegelstriche, Nummerierungen, \
+Überschriften, Doppelpunkte als Gliederung, kein Markdown.
+2. Exakt 1 bis 3 vollständige Sätze. Jeder Satz endet mit einem Punkt.
+3. Maximal 350 Zeichen insgesamt.
+4. Keine Semikolons verwenden.
+5. Beginne direkt mit der Sachdefinition. Den Begriff selbst NICHT wiederholen. \
+Keine Einleitungen wie "Unter … versteht man" oder "Der Begriff bezeichnet".
+
+INHALTLICHE REGELN:
+- Juristische Lehrbuch-Sprache (Niveau Medicus, Wessels/Beulke, Maurer).
+- Gutachtenstil-tauglich, also als Obersatz in einer Klausur verwendbar.
+- Falls eine einschlägige Gesetzesnorm existiert, MUSS diese genannt werden \
+(z.B. "§ 433 BGB", "Art. 12 GG", "§ 263 StGB"). Ohne Normangabe nur, \
+wenn der Begriff rein dogmatisch und nicht in einem Gesetz verortet ist.\
 """
 
 
@@ -155,6 +155,7 @@ def generate_definition(client: OpenAI, term: str, rechtsgebiet: str,
                 instructions=SYSTEM_PROMPT,
                 input=user_msg,
                 max_output_tokens=8192,
+                reasoning={"effort": "low"},
             )
             if resp.usage:
                 tracker.add_responses(resp.usage)

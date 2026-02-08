@@ -844,9 +844,9 @@ function buildDailyLessons(terms, abbrevs, defs) {
 async function loadDatasets() {
   try {
     const [tRows, aRows, dRows] = await Promise.all([
-      loadCSV("./jur_begriffe_final.csv"),
+      loadCSV("./alle_begriffe.csv"),
       loadCSV("./jur_abkuerzungen_final.csv"),
-      loadCSV("./jur_definitionen_final.csv"),
+      loadCSV("./alle_begriffe_mit_definitionen.csv"),
     ]);
 
     datasets.terms = toTermData(tRows);
@@ -879,6 +879,7 @@ function init() {
   typingInput.addEventListener("input", handleInput);
 
   $("restart").addEventListener("click", () => { resetSession(); typingInput.focus(); });
+  $("skipLesson").addEventListener("click", () => { selectNextLesson(); typingInput.focus(); });
   $("shuffle").addEventListener("click", shuffleLessons);
 
   $("openSidebar").addEventListener("click", openSidebar);
