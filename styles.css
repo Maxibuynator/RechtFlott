@@ -185,6 +185,14 @@ body {
 }
 .icon-btn:hover { background: var(--bg2); }
 
+/* Make icon buttons more visible in dark mode */
+.dark .icon-btn {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+.dark .icon-btn:hover { background: rgba(255,255,255,0.03); }
+
 /* ── Streak Bar ── */
 .streak-bar {
   display: flex; align-items: center; justify-content: center;

@@ -179,6 +179,7 @@ function toggleDarkMode() {
   document.body.classList.toggle("dark");
   saveStore({ dark: document.body.classList.contains("dark") });
   updateDarkIcon();
+  try { if (typingInput) typingInput.focus(); } catch (e) { console.warn('focus error', e); }
 }
 
 function updateDarkIcon() {
@@ -385,8 +386,10 @@ function updateDefPanel() {
 function renderText() {
   typingArea.innerHTML = "";
   if (!activeLesson) return;
-  // Group characters into word wrappers so browsers only break at spaces
-  const text = activeLesson.text;
+  // Prepare renderable text (normalize ellipsis etc.) and group characters into word wrappers
+  const text = normalizeText(activeLesson.text || "");
+  // store current render text length for progress/completion calculations
+  currentRenderText = text;
   let wordWrapper = null;
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
@@ -415,6 +418,15 @@ function renderText() {
   }
 }
 
+// Hold the normalized text currently rendered (used for progress/completion)
+let currentRenderText = "";
+
+function normalizeText(t) {
+  if (!t) return "";
+  // Replace single unicode ellipsis with three dots to match typing behavior
+  return t.replace(/\u2026/g, "...");
+}
+
 function resetSession() {
   typingInput.value = "";
   startTime = null;
@@ -424,17 +436,18 @@ function resetSession() {
   updateStats();
   renderText();
   updateProgress();
-  if (activeLesson) highlightKey(activeLesson.text[0] || "");
+  if (activeLesson) highlightKey(getNextChar());
 }
 
 function getNextChar() {
   if (!activeLesson) return "";
-  return activeLesson.text[typingInput.value.length] || "";
+  return (currentRenderText[typingInput.value.length] || "");
 }
 
 function updateProgress() {
   if (!activeLesson) return;
-  const pct = (typingInput.value.length / activeLesson.text.length) * 100;
+  const total = currentRenderText.length || (activeLesson.text || "").length;
+  const pct = (typingInput.value.length / total) * 100;
   progressBar.style.width = `${Math.min(pct, 100)}%`;
 }
 
@@ -492,7 +505,7 @@ function updateTypingFeedback() {
   updateProgress();
   const stats = updateStats();
 
-  if (typed.length >= activeLesson.text.length) {
+  if (typed.length >= currentRenderText.length) {
     completed = true;
     highlightKey("");
     showCompletion(stats);
@@ -503,12 +516,12 @@ function updateTypingFeedback() {
 
 function handleInput(e) {
   if (completed) {
-    e.target.value = e.target.value.slice(0, activeLesson.text.length);
+    e.target.value = e.target.value.slice(0, currentRenderText.length || activeLesson.text.length);
     return;
   }
   if (!startTime) startTime = Date.now();
-  if (e.target.value.length > activeLesson.text.length) {
-    e.target.value = e.target.value.slice(0, activeLesson.text.length);
+  if (e.target.value.length > (currentRenderText.length || activeLesson.text.length)) {
+    e.target.value = e.target.value.slice(0, currentRenderText.length || activeLesson.text.length);
   }
   updateTypingFeedback();
 }
@@ -902,6 +915,21 @@ function init() {
   // Events
   typingArea.addEventListener("click", () => typingInput.focus());
   typingInput.addEventListener("input", handleInput);
+
+  // Ensure typing input receives focus when user starts typing (helps if focus is lost, e.g., after theme toggle)
+  document.addEventListener('keydown', (e) => {
+    try {
+      const pwGate = document.getElementById('pwGate');
+      if (pwGate && !pwGate.classList.contains('hidden')) return; // gate visible
+      if (!typingInput) return;
+      const active = document.activeElement;
+      if (active === typingInput) return;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+      // Ignore modifier-only keys
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      typingInput.focus();
+    } catch (err) { /* ignore */ }
+  });
 
   $("restart").addEventListener("click", () => { resetSession(); typingInput.focus(); });
   $("skipLesson").addEventListener("click", () => { selectNextLesson(); typingInput.focus(); });
