@@ -1,223 +1,245 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- Optional test password: set this to enable a simple client-side gate (clear to disable) -->
-    <meta name="passwort" content="jura-2026" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RechtFlott</title>
-    <link rel="stylesheet" href="styles.css" />
-      <meta name="Jura-2026" content="Jura2026" />
-      <meta name="site-password" content="Jura2026" />
-  </head>
-  <body>
-    <!-- ── Mode Selection ── -->
-    <section class="mode-screen" id="modeScreen">
-      <div class="mode-card">
-        <div class="mode-logo">⌨</div>
-        <h1>RechtFlott</h1>
-        <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
-        <div class="mode-actions">
-          <button class="btn btn--secondary" type="button" data-mode="learning">
-            <span class="btn-icon">📖</span>
-            <span>
-              <strong>Lernmodus</strong>
-              <small>Tastatur-Grundlagen in Kapiteln</small>
-            </span>
-          </button>
-          <button class="btn btn--primary" type="button" data-mode="legal">
-            <span class="btn-icon">⚖</span>
-            <span>
-              <strong>Juristische Begriffe</strong>
-              <small>Begriffe, Abkürzungen, Definitionen</small>
-            </span>
-          </button>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Optional test password: set this to enable a simple client-side gate (clear to disable) -->
+  <meta name="passwort" content="jura-2026" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RechtFlott</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="Jura-2026" content="Jura2026" />
+  <meta name="site-password" content="Jura2026" />
+</head>
+
+<body>
+  <!-- ── Mode Selection ── -->
+  <section class="mode-screen" id="modeScreen">
+    <div class="mode-card">
+      <div class="mode-logo">⌨</div>
+      <h1>RechtFlott</h1>
+      <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
+      <div class="mode-actions">
+        <button class="btn btn--secondary" type="button" data-mode="learning">
+          <span class="btn-icon">📖</span>
+          <span>
+            <strong>Lernmodus</strong>
+            <small>Tastatur-Grundlagen in Kapiteln</small>
+          </span>
+        </button>
+        <button class="btn btn--primary" type="button" data-mode="legal">
+          <span class="btn-icon">⚖</span>
+          <span>
+            <strong>Juristische Begriffe</strong>
+            <small>Begriffe, Abkürzungen, Definitionen</small>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── App ── -->
+  <div class="app hidden" id="app">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="topbar-brand" id="changeMode" type="button">⌨ RechtFlott</button>
+        <span class="chip" id="modeChip">Lernmodus</span>
+      </div>
+      <div class="topbar-stats" id="statsBar">
+        <div class="stat"><span class="stat-val" id="wpm">0</span><span class="stat-lbl">WPM</span></div>
+        <div class="stat"><span class="stat-val" id="accuracy">100%</span><span class="stat-lbl">Genauigkeit</span>
+        </div>
+        <div class="stat"><span class="stat-val" id="errors">0</span><span class="stat-lbl">Fehler</span></div>
+        <div class="stat"><span class="stat-val" id="time">0:00</span><span class="stat-lbl">Zeit</span></div>
+        <div class="stat stat--best hidden" id="bestStat">
+          <span class="stat-val" id="bestWpm">–</span>
+          <span class="stat-lbl">Rekord</span>
         </div>
       </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode">🌙</button>
+        <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus">⌨</button>
+      </div>
+    </header>
+
+    <!-- Streak / daily goal banner -->
+    <div class="streak-bar" id="streakBar">
+      <span id="streakText">🔥 0 Tage Streak</span>
+      <span class="streak-sep">·</span>
+      <span class="streak-goal" id="streakGoal">Ziel: 5 Lektionen heute (0/5)</span>
+    </div>
+
+    <!-- Main layout -->
+    <main class="main" id="mainArea">
+      <!-- Sidebar (drawer) -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-head">
+          <h2>Lektionen</h2>
+          <button class="icon-btn sidebar-close" id="closeSidebar" type="button">✕</button>
+        </div>
+        <div class="tabs hidden" id="legalToggle"></div>
+        <div class="tabs tabs--sm hidden" id="rechtsgebietToggle">
+          <button class="tab active" type="button" data-rg="all">Alle</button>
+          <button class="tab" type="button" data-rg="Strafrecht">StR</button>
+          <button class="tab" type="button" data-rg="Zivilrecht">ZR</button>
+          <button class="tab" type="button" data-rg="Öffentliches Recht">ÖR</button>
+        </div>
+        <div class="sidebar-filters">
+          <input id="lessonSearch" class="input" type="text" placeholder="Suchen…" />
+          <select id="chapterSelect" class="input hidden" aria-label="Kapitel"></select>
+          <button id="randomizeChapterBtn" class="btn btn--ghost btn--sm" title="Zufallsübung">🎲</button>
+        </div>
+        <div class="lesson-list" id="lessonList"></div>
+        <div class="load-more">
+          <button class="btn btn--ghost btn--sm" id="loadMore">Mehr laden</button>
+        </div>
+      </aside>
+
+      <!-- Trainer (center stage) -->
+      <section class="trainer" id="trainerPanel">
+        <div class="trainer-top">
+          <button class="btn btn--ghost btn--sm" id="openSidebar" type="button">☰ Lektionen</button>
+          <div class="progress">
+            <div class="progress-fill" id="progressBar"></div>
+          </div>
+          <div class="trainer-actions">
+            <button id="restart" class="btn btn--ghost btn--sm">↻ Neu</button>
+            <button id="skipLesson" class="btn btn--ghost btn--sm" title="Überspringen"><svg
+                xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 4 15 12 5 20 5 4" />
+                <line x1="19" y1="5" x2="19" y2="19" />
+              </svg> Skip</button>
+          </div>
+        </div>
+
+        <!-- WPM Progress Gauge (timed mode only) -->
+        <div class="wpm-gauge hidden" id="wpmGauge">
+          <div class="wpm-gauge-header">
+            <span class="wpm-gauge-label">Examensniveau</span>
+            <span class="wpm-gauge-value" id="wpmGaugeValue">0 / 80 WPM</span>
+          </div>
+          <div class="wpm-gauge-track">
+            <div class="wpm-gauge-fill" id="wpmGaugeFill"></div>
+            <div class="wpm-gauge-target"></div>
+          </div>
+        </div>
+
+        <!-- Definition panel -->
+        <div class="def-panel hidden" id="definitionPanel">
+          <div class="def-head">
+            <div><span class="def-label">Begriff</span><span class="rg-badge" id="rgBadge"></span>
+              <h3 id="definitionTerm">–</h3>
+            </div>
+            <button class="btn btn--ghost btn--sm" id="toggleDefinition" type="button">Anzeigen</button>
+          </div>
+          <p class="def-body hidden" id="definitionText"></p>
+          <p class="disclaimer" style="margin-top:8px;">Hinweis: Die Definitionen wurden mithilfe einer KI erzeugt. Es
+            wird keine Gewähr für Vollständigkeit oder inhaltliche Korrektheit übernommen.</p>
+        </div>
+
+        <!-- Typing zone -->
+        <div class="typing-zone" id="typingArea" aria-live="polite">
+          <span class="disclaimer">Hinweis: Die angezeigten Texte wurden mithilfe einer KI erzeugt. Es wird keine Gewähr
+            für Vollständigkeit oder inhaltliche Korrektheit übernommen.</span>
+        </div>
+        <input id="typingInput" class="sr-only" autocomplete="off" autocorrect="off" autocapitalize="off"
+          spellcheck="false" />
+
+        <!-- Completion overlay -->
+        <div class="completion" id="completion">
+          <div class="completion-card">
+            <div class="completion-icon" id="completionIcon">🎯</div>
+            <h3 id="completionTitle">Fertig!</h3>
+            <p id="completionSub">Saubere Runde.</p>
+            <div class="completion-stats">
+              <div class="cs"><span class="cs-val" id="cWpm">0</span><span class="cs-lbl">WPM</span></div>
+              <div class="cs"><span class="cs-val" id="cAcc">100%</span><span class="cs-lbl">Genauigkeit</span></div>
+              <div class="cs"><span class="cs-val" id="cTime">0:00</span><span class="cs-lbl">Zeit</span></div>
+            </div>
+            <div class="completion-badge hidden" id="completionBadge">🏆 Neuer Rekord!</div>
+            <div class="completion-actions">
+              <button id="nextLesson" class="btn btn--primary">Nächste Lektion →</button>
+              <button id="repeatLesson" class="btn btn--ghost">Wiederholen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips">
+          <span>💡 Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- Keyboard (collapsible) -->
+    <section class="keyboard-wrap" id="keyboardWrap">
+      <div class="finger-hint" id="fingerHint"></div>
+      <div class="keyboard-head">
+        <span class="keyboard-title">Tastatur & Finger</span>
+        <div class="finger-legend" id="fingerLegend"></div>
+      </div>
+      <div id="keyboard" class="keyboard-grid" aria-hidden="true"></div>
     </section>
 
-    <!-- ── App ── -->
-    <div class="app hidden" id="app">
-      <!-- Top bar -->
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="topbar-brand" id="changeMode" type="button">⌨ RechtFlott</button>
-          <span class="chip" id="modeChip">Lernmodus</span>
-        </div>
-        <div class="topbar-stats" id="statsBar">
-          <div class="stat"><span class="stat-val" id="wpm">0</span><span class="stat-lbl">WPM</span></div>
-          <div class="stat"><span class="stat-val" id="accuracy">100%</span><span class="stat-lbl">Genauigkeit</span></div>
-          <div class="stat"><span class="stat-val" id="errors">0</span><span class="stat-lbl">Fehler</span></div>
-          <div class="stat"><span class="stat-val" id="time">0:00</span><span class="stat-lbl">Zeit</span></div>
-          <div class="stat stat--best hidden" id="bestStat">
-            <span class="stat-val" id="bestWpm">–</span>
-            <span class="stat-lbl">Rekord</span>
-          </div>
-        </div>
-        <div class="topbar-right">
-          <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode">🌙</button>
-          <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus">⌨</button>
-        </div>
-      </header>
+    <footer class="footer">Kein Tracking · Alles lokal · Erstellt für das E-Examen · <a
+        href="impressum.html">Impressum</a></footer>
+  </div>
 
-      <!-- Streak / daily goal banner -->
-      <div class="streak-bar" id="streakBar">
-        <span id="streakText">🔥 0 Tage Streak</span>
-        <span class="streak-sep">·</span>
-        <span class="streak-goal" id="streakGoal">Ziel: 5 Lektionen heute (0/5)</span>
+  <!-- Simple client-side password gate for informal testing -->
+  <div id="pwGate" class="pw-gate hidden" aria-hidden="true">
+    <div class="pw-panel">
+      <h2>Zugang geschützt</h2>
+      <p>Bitte Passwort eingeben, um die Seite zu sehen.</p>
+      <input id="pwInput" type="password" placeholder="Passwort" />
+      <div class="pw-actions">
+        <button id="pwOk" class="btn btn--primary">Öffnen</button>
+        <button id="pwCancel" class="btn btn--ghost">Abbrechen</button>
       </div>
-
-      <!-- Main layout -->
-      <main class="main" id="mainArea">
-        <!-- Sidebar (drawer) -->
-        <aside class="sidebar" id="sidebar">
-          <div class="sidebar-head">
-            <h2>Lektionen</h2>
-            <button class="icon-btn sidebar-close" id="closeSidebar" type="button">✕</button>
-          </div>
-          <div class="tabs hidden" id="legalToggle">
-            <button class="tab active" type="button" data-variant="mix">Mix</button>
-            <button class="tab" type="button" data-variant="terms">Begriffe</button>
-            <button class="tab" type="button" data-variant="abbrev">Abk.</button>
-            <button class="tab" type="button" data-variant="definitions">Defs.</button>
-            <button class="tab" type="button" data-variant="daily">Daily</button>
-          </div>
-          <div class="tabs tabs--sm hidden" id="rechtsgebietToggle">
-            <button class="tab active" type="button" data-rg="all">Alle</button>
-            <button class="tab" type="button" data-rg="Strafrecht">StR</button>
-            <button class="tab" type="button" data-rg="Zivilrecht">ZR</button>
-            <button class="tab" type="button" data-rg="Öffentliches Recht">ÖR</button>
-          </div>
-          <div class="sidebar-filters">
-            <input id="lessonSearch" class="input" type="text" placeholder="Suchen…" />
-            <select id="chapterSelect" class="input hidden" aria-label="Kapitel"></select>
-            <button id="randomizeChapterBtn" class="btn btn--ghost btn--sm" title="Zufallsübung">🎲</button>
-          </div>
-          <div class="lesson-list" id="lessonList"></div>
-          <div class="load-more">
-            <button class="btn btn--ghost btn--sm" id="loadMore">Mehr laden</button>
-          </div>
-        </aside>
-
-        <!-- Trainer (center stage) -->
-        <section class="trainer" id="trainerPanel">
-          <div class="trainer-top">
-            <button class="btn btn--ghost btn--sm" id="openSidebar" type="button">☰ Lektionen</button>
-            <div class="progress"><div class="progress-fill" id="progressBar"></div></div>
-            <div class="trainer-actions">
-              <button id="restart" class="btn btn--ghost btn--sm">↻ Neu</button>
-              <button id="skipLesson" class="btn btn--ghost btn--sm" title="Überspringen">⏭ Skip</button>
-              <button id="shuffle" class="btn btn--ghost btn--sm">🔀</button>
-            </div>
-          </div>
-
-          <!-- Definition panel -->
-          <div class="def-panel hidden" id="definitionPanel">
-            <div class="def-head">
-              <div><span class="def-label">Begriff</span><span class="rg-badge" id="rgBadge"></span><h3 id="definitionTerm">–</h3></div>
-              <button class="btn btn--ghost btn--sm" id="toggleDefinition" type="button">Anzeigen</button>
-            </div>
-            <p class="def-body hidden" id="definitionText"></p>
-            <p class="disclaimer" style="margin-top:8px;">Hinweis: Die Definitionen wurden mithilfe einer KI erzeugt. Es wird keine Gewähr für Vollständigkeit oder inhaltliche Korrektheit übernommen.</p>
-          </div>
-
-          <!-- Typing zone -->
-          <div class="typing-zone" id="typingArea" aria-live="polite">
-            <span class="disclaimer">Hinweis: Die angezeigten Texte wurden mithilfe einer KI erzeugt. Es wird keine Gewähr für Vollständigkeit oder inhaltliche Korrektheit übernommen.</span>
-          </div>
-          <input id="typingInput" class="sr-only" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-
-          <!-- Completion overlay -->
-          <div class="completion" id="completion">
-            <div class="completion-card">
-              <div class="completion-icon" id="completionIcon">🎯</div>
-              <h3 id="completionTitle">Fertig!</h3>
-              <p id="completionSub">Saubere Runde.</p>
-              <div class="completion-stats">
-                <div class="cs"><span class="cs-val" id="cWpm">0</span><span class="cs-lbl">WPM</span></div>
-                <div class="cs"><span class="cs-val" id="cAcc">100%</span><span class="cs-lbl">Genauigkeit</span></div>
-                <div class="cs"><span class="cs-val" id="cTime">0:00</span><span class="cs-lbl">Zeit</span></div>
-              </div>
-              <div class="completion-badge hidden" id="completionBadge">🏆 Neuer Rekord!</div>
-              <div class="completion-actions">
-                <button id="nextLesson" class="btn btn--primary">Nächste Lektion →</button>
-                <button id="repeatLesson" class="btn btn--ghost">Wiederholen</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="tips">
-            <span>💡 Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
-          </div>
-        </section>
-      </main>
-
-      <!-- Keyboard (collapsible) -->
-      <section class="keyboard-wrap" id="keyboardWrap">
-        <div class="finger-hint" id="fingerHint"></div>
-        <div class="keyboard-head">
-          <span class="keyboard-title">Tastatur & Finger</span>
-          <div class="finger-legend" id="fingerLegend"></div>
-        </div>
-        <div id="keyboard" class="keyboard-grid" aria-hidden="true"></div>
-      </section>
-
-      <footer class="footer">Kein Tracking · Alles lokal · Erstellt für das E-Examen · <a href="impressum.html">Impressum</a></footer>
+      <p class="pw-hint">Hinweis: Diese Sperre ist nur für informelle Tests geeignet und nicht hochsicher.</p>
     </div>
+  </div>
 
-    <!-- Simple client-side password gate for informal testing -->
-    <div id="pwGate" class="pw-gate hidden" aria-hidden="true">
-      <div class="pw-panel">
-        <h2>Zugang geschützt</h2>
-        <p>Bitte Passwort eingeben, um die Seite zu sehen.</p>
-        <input id="pwInput" type="password" placeholder="Passwort" />
-        <div class="pw-actions">
-          <button id="pwOk" class="btn btn--primary">Öffnen</button>
-          <button id="pwCancel" class="btn btn--ghost">Abbrechen</button>
-        </div>
-        <p class="pw-hint">Hinweis: Diese Sperre ist nur für informelle Tests geeignet und nicht hochsicher.</p>
-      </div>
-    </div>
+  <canvas id="confetti" class="confetti-canvas"></canvas>
+  <div class="global-impressum"><a href="impressum.html">Impressum</a></div>
+  <script>
+    // Lightweight client-side gate: reads meta[name=site-password]. If empty, gate is disabled.
+    (function () {
+      // Support either `site-password` or legacy/custom meta name `Jura-2026`
+      const meta = document.querySelector('meta[name="site-password"], meta[name="Jura-2026"]');
+      if (!meta) return;
+      const pwd = (meta.content || "").toString();
+      if (!pwd) return; // disabled
 
-    <canvas id="confetti" class="confetti-canvas"></canvas>
-    <div class="global-impressum"><a href="impressum.html">Impressum</a></div>
-    <script>
-      // Lightweight client-side gate: reads meta[name=site-password]. If empty, gate is disabled.
-      (function(){
-        // Support either `site-password` or legacy/custom meta name `Jura-2026`
-        const meta = document.querySelector('meta[name="site-password"], meta[name="Jura-2026"]');
-        if (!meta) return;
-        const pwd = (meta.content || "").toString();
-        if (!pwd) return; // disabled
+      const pwGate = document.getElementById('pwGate');
+      const pwInput = document.getElementById('pwInput');
+      const pwOk = document.getElementById('pwOk');
+      const pwCancel = document.getElementById('pwCancel');
 
-        const pwGate = document.getElementById('pwGate');
-        const pwInput = document.getElementById('pwInput');
-        const pwOk = document.getElementById('pwOk');
-        const pwCancel = document.getElementById('pwCancel');
+      function unlock() {
+        pwGate.classList.add('hidden');
+        pwGate.setAttribute('aria-hidden', 'true');
+        document.getElementById('app').classList.remove('hidden');
+      }
 
-        function unlock() {
-          pwGate.classList.add('hidden');
-          pwGate.setAttribute('aria-hidden','true');
-          document.getElementById('app').classList.remove('hidden');
-        }
+      function showGate() {
+        // Always require password on every load — do not persist unlock state.
+        pwGate.classList.remove('hidden');
+        pwGate.setAttribute('aria-hidden', 'false');
+      }
 
-        function showGate(){
-          // Always require password on every load — do not persist unlock state.
-          pwGate.classList.remove('hidden');
-          pwGate.setAttribute('aria-hidden','false');
-        }
+      pwOk.addEventListener('click', () => {
+        if (pwInput.value === pwd) unlock(); else { pwInput.value = ''; pwInput.focus(); }
+      });
+      pwInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') pwOk.click(); });
+      pwCancel.addEventListener('click', () => { window.location.href = 'about:blank'; });
 
-        pwOk.addEventListener('click', () => {
-          if (pwInput.value === pwd) unlock(); else { pwInput.value = ''; pwInput.focus(); }
-        });
-        pwInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') pwOk.click(); });
-        pwCancel.addEventListener('click', () => { window.location.href = 'about:blank'; });
+      // initially hide app until unlocked (always required)
+      document.getElementById('app').classList.add('hidden');
+      showGate();
+    })();
+  </script>
+  <script src="app.js?v=4"></script>
+</body>
 
-        // initially hide app until unlocked (always required)
-        document.getElementById('app').classList.add('hidden');
-        showGate();
-      })();
-    </script>
-    <script src="app.js?v=4"></script>
-  </body>
 </html>
