@@ -293,26 +293,144 @@ body {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* ── Streak Bar ── */
-.streak-bar {
+/* ── Daily Practice Timer Bar ── */
+.daily-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 6px 20px;
+  gap: 10px;
+  padding: 7px 20px;
   background: linear-gradient(90deg, var(--accent-bg), var(--bg));
   font-size: 13px;
   font-weight: 500;
   border-bottom: 1px solid var(--line);
 }
 
-.streak-sep {
+.daily-timer-wrap {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.daily-ring {
+  width: 32px;
+  height: 32px;
+  transform: rotate(-90deg);
+}
+
+.daily-ring-bg {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3;
+}
+
+.daily-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.daily-timer-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.daily-label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.daily-sep {
   color: var(--muted);
 }
 
-.streak-goal {
+.daily-streak {
   color: var(--muted);
 }
+
+/* ── Daily Goal Banner (in completion card) ── */
+.daily-goal-banner {
+  margin-top: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--success-bg, #ecfdf5), var(--accent-bg));
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--success, #16a34a);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.daily-goal-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--success, #16a34a);
+  margin-bottom: 4px;
+}
+
+.daily-goal-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.daily-wpm-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  height: 70px;
+  padding: 0 8px;
+}
+
+.wpm-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  max-width: 28px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.wpm-bar {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.5s ease;
+}
+
+.wpm-bar-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Retry Banner styling ── */
+.retry-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: var(--danger-bg, #fef2f2);
+  border: 1px solid var(--danger, #ef4444);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--danger, #ef4444);
+  font-weight: 500;
+}
+
 
 /* ── Buttons ── */
 .btn {
@@ -957,6 +1075,37 @@ body.timed-active .progress-fill {
   display: inline-block;
   margin-bottom: 16px;
   animation: pulse 1.5s ease infinite;
+}
+
+.retry-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  animation: retryPulse 2s ease-in-out infinite;
+}
+
+.dark .retry-banner {
+  background: linear-gradient(135deg, #451a03, #78350f);
+  color: #fde68a;
+}
+
+@keyframes retryPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .8;
+  }
 }
 
 .completion-actions {

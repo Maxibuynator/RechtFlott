@@ -63,11 +63,17 @@
       </div>
     </header>
 
-    <!-- Streak / daily goal banner -->
-    <div class="streak-bar" id="streakBar">
-      <span id="streakText">🔥 0 Tage Streak</span>
-      <span class="streak-sep">·</span>
-      <span class="streak-goal" id="streakGoal">Ziel: 5 Lektionen heute (0/5)</span>
+    <div class="daily-bar" id="dailyBar">
+      <div class="daily-timer-wrap">
+        <svg class="daily-ring" viewBox="0 0 36 36">
+          <circle class="daily-ring-bg" cx="18" cy="18" r="16" />
+          <circle class="daily-ring-fill" id="dailyRingFill" cx="18" cy="18" r="16" />
+        </svg>
+        <span class="daily-timer-text" id="dailyTimerText">20:00</span>
+      </div>
+      <span class="daily-label" id="dailyLabel">Tagesziel: 20 min üben</span>
+      <span class="daily-sep">·</span>
+      <span class="daily-streak" id="dailyStreak">🔥 0 Tage</span>
     </div>
 
     <!-- Main layout -->
@@ -159,6 +165,19 @@
               <div class="cs"><span class="cs-val" id="cTime">0:00</span><span class="cs-lbl">Zeit</span></div>
             </div>
             <div class="completion-badge hidden" id="completionBadge">🏆 Neuer Rekord!</div>
+            <div class="daily-goal-banner hidden" id="dailyGoalBanner">
+              <div class="daily-goal-header">🎯 Tagesziel erreicht!</div>
+              <div class="daily-goal-subtitle">Deine heutigen Sessions:</div>
+              <div class="daily-wpm-chart" id="dailyWpmChart"></div>
+            </div>
+            <div class="retry-banner hidden" id="retryBanner">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span>Unter 50 WPM — versuche es nochmal!</span>
+            </div>
             <div class="completion-actions">
               <button id="nextLesson" class="btn btn--primary">Nächste Lektion →</button>
               <button id="repeatLesson" class="btn btn--ghost">Wiederholen</button>
