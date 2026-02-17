@@ -886,31 +886,23 @@ function renderText() {
   const text = normalizeText(activeLesson.text || "");
   // store current render text length for progress/completion calculations
   currentRenderText = text;
-  let wordWrapper = null;
+  // Simple, standard rendering: just chars and spaces
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     const isSpace = /\s/.test(char);
-    if (!isSpace) {
-      if (!wordWrapper) {
-        wordWrapper = document.createElement('span');
-        wordWrapper.className = 'word';
-        typingArea.appendChild(wordWrapper);
-      }
-      const cspan = document.createElement('span');
-      cspan.textContent = char;
-      cspan.dataset.char = char;
-      if (typingArea.childElementCount === 0 || (typingArea.firstChild === wordWrapper && wordWrapper.childElementCount === 0 && i === 0)) cspan.classList.add('active');
-      wordWrapper.appendChild(cspan);
+
+    const span = document.createElement('span');
+    span.dataset.char = char;
+
+    if (isSpace) {
+      span.className = 'space';
+      span.textContent = ' '; // Regular space
     } else {
-      // close current word wrapper
-      wordWrapper = null;
-      const sspan = document.createElement('span');
-      sspan.className = 'space';
-      sspan.dataset.char = ' ';
-      // Use a non-breaking space so the span always produces visible width
-      sspan.textContent = '\u00A0';
-      typingArea.appendChild(sspan);
+      span.textContent = char;
     }
+
+    if (i === 0) span.classList.add('active');
+    typingArea.appendChild(span);
   }
 }
 
@@ -919,8 +911,9 @@ let currentRenderText = "";
 
 function normalizeText(t) {
   if (!t) return "";
-  // Replace single unicode ellipsis with three dots to match typing behavior
-  return t.replace(/\u2026/g, "...");
+  // Replace single unicode ellipsis with three dots
+  // Collapse multiple spaces AND trim
+  return t.replace(/\u2026/g, "...").replace(/\s+/g, " ").trim();
 }
 
 function resetSession() {
@@ -1469,13 +1462,13 @@ function generateSingleAbbrevs() {
 
 function generateSingleDef() {
   counters.defs++;
-  if (pools.defs.length < 3) refillPool("defs");
-  const chunk = pools.defs.splice(0, 3);
+  if (pools.defs.length < 1) refillPool("defs");
+  const chunk = pools.defs.splice(0, 1);
   const combined = chunk.map(d => d.definition).join(" ");
   const firstDef = chunk[0];
   return {
     id: `def-${counters.defs}`,
-    title: chunk.map(d => d.term).join(" · "),
+    title: firstDef.term,
     description: firstDef.rechtsgebiet || "Definitionen tippen",
     term: firstDef.term, definition: combined, rechtsgebiet: firstDef.rechtsgebiet, text: combined,
   };
