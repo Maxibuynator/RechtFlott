@@ -283,6 +283,7 @@ let defVisible = false;
 let visibleCount = 40;
 const PAGE_SIZE = 40;
 let datasets = { terms: null, abbrev: null, definitions: null };
+let wpmHistory = [];
 let keyboardVisible = true;
 let sidebarOpen = true;
 
@@ -925,6 +926,7 @@ function normalizeText(t) {
 function resetSession() {
   typingInput.value = "";
   startTime = null;
+  wpmHistory = [];
   errors = 0;
   completed = false;
   completion.classList.remove("show");
@@ -992,10 +994,27 @@ function updateStats() {
 
   // Update WPM gauge in real-time for ALL legal variants (not just timed)
   if (activeMode && activeMode.id === "legal" && wpmGauge && wpmGaugeValue && wpmGaugeFill) {
-    const gaugePct = Math.min(100, (wpm / 80) * 100);
+    // Smoothed WPM for Gauge
+    // Maintain a small history of instantaneous WPM to smooth out jumps
+    if (!startTime) {
+      wpmHistory = [];
+    } else {
+      if (!wpmHistory) wpmHistory = [];
+      wpmHistory.push(wpm);
+      if (wpmHistory.length > 10) wpmHistory.shift(); // Keep last 10 samples
+    }
+
+    // Calculate average of history, or use 0 if empty
+    const smoothWpm = wpmHistory.length > 0
+      ? Math.round(wpmHistory.reduce((a, b) => a + b, 0) / wpmHistory.length)
+      : 0;
+
+    const displayWpm = smoothWpm; // Use smoothed value for the gauge
+
+    const gaugePct = Math.min(100, (displayWpm / 80) * 100);
     wpmGaugeFill.style.width = `${gaugePct}%`;
-    wpmGaugeValue.textContent = `${wpm} / 80 WPM`;
-    wpmGaugeFill.classList.toggle("wpm-gauge-reached", wpm >= 80);
+    wpmGaugeValue.textContent = `${displayWpm} / 80 WPM`;
+    wpmGaugeFill.classList.toggle("wpm-gauge-reached", displayWpm >= 80);
   }
 
   return { wpm, acc, time: `${m}:${s}` };
