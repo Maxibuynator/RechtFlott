@@ -1548,7 +1548,7 @@ async function loadDatasets() {
     const [tRows, aRows, dRows] = await Promise.all([
       loadCSV("./alle_begriffe.csv"),
       loadCSV("./jur_abkuerzungen_final.csv"),
-      loadCSV("./alle_begriffe_mit_definitionen.csv"),
+      loadCSV("./Begriffe neu.csv"),
     ]);
 
     datasets.terms = toTermData(tRows);
