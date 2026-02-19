@@ -3,11 +3,106 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RechtFlott — 10-Finger-Tipptraining für das juristische E-Examen</title>
+  <meta name="description"
+    content="RechtFlott ist ein 10-Finger-Tipptraining speziell für Jurastudierende und das E-Examen. Übe juristische Fachbegriffe, Paragraphen und Definitionen direkt im Browser." />
+  <link rel="canonical" href="https://rechtflott.com/" />
+
+  <!-- Favicon (Keyboard Emoji as SVG) -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌨</text></svg>" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="RechtFlott — 10-Finger-Tipptraining für Juristen" />
+  <meta property="og:description"
+    content="10-Finger-Training für das juristische E-Examen. Juristische Begriffe, §-Zeichen und Definitionen tippen üben." />
+  <meta property="og:url" content="https://rechtflott.com/" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:site_name" content="RechtFlott" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="RechtFlott — 10-Finger-Tipptraining für Juristen" />
+  <meta name="twitter:description"
+    content="Tipptraining speziell für das juristische E-Examen. Übe Fachbegriffe, Abkürzungen und §-Zeichen." />
+
+  <!-- Additional SEO -->
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Maximilian Buy" />
+  <meta name="keywords"
+    content="10-Finger-System, Tipptrainer, E-Examen, Jura, Tippen lernen, juristische Begriffe, Paragraphenzeichen, Schreibtrainer, Jurastudium" />
+
+  <!-- Structured Data: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "RechtFlott",
+    "url": "https://rechtflott.com/",
+    "description": "10-Finger-Tipptraining speziell für Jurastudierende und das E-Examen. Lernmodus mit 30 Kapiteln und juristischer Fachbegriffe-Trainer.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "browserRequirements": "Requires a modern browser with JavaScript enabled",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Maximilian Buy"
+    },
+    "inLanguage": "de"
+  }
+  </script>
+
+  <!-- Structured Data: FAQPage (GEO-optimiert) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Was ist RechtFlott?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "RechtFlott ist ein 10-Finger-Tipptraining, das speziell für Jurastudierende und die Vorbereitung auf das E-Examen entwickelt wurde. Es bietet einen Lernmodus mit 30 Kapiteln zum systematischen Erlernen des 10-Finger-Systems sowie einen Jura-Modus zum Üben juristischer Fachbegriffe, Abkürzungen und Definitionen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Warum brauche ich 10-Finger-Tippen für das E-Examen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Im elektronischen juristischen Staatsexamen (E-Examen) werden Klausuren am Computer geschrieben. Schnelles und fehlerfreies Tippen spart wertvolle Zeit. Erfahrungswerte zeigen, dass ab ca. 70 Wörtern pro Minute (WPM) die Tippgeschwindigkeit kein limitierender Faktor mehr ist."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Woher stammen die juristischen Definitionen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Die Definitionen im Jura-Modus sind KI-generiert und werden nach bestem Wissen von Jurastudierenden kuratiert. Sie dienen ausschließlich als Tippübung und erheben keinen Anspruch auf Vollständigkeit oder Rechtsverbindlichkeit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Welche Inhalte bietet der Jura-Modus?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Der Jura-Modus umfasst juristische Fachbegriffe aus Strafrecht, Zivilrecht und Öffentlichem Recht, gängige Abkürzungen (BGB, StGB, ZPO etc.), Definitionen zum Ausschreiben, einen täglichen Drill und einen Zeitmodus mit 60-Sekunden-Challenges. Die Inhalte sind KI-generiert und von Jurastudierenden kuratiert."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
   <!-- Optional test password: set this to enable a simple client-side gate (clear to disable) -->
   <meta name="passwort" content="jura-2026" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RechtFlott</title>
-  <link rel="stylesheet" href="styles.css" />
   <meta name="Jura-2026" content="Jura2026" />
   <meta name="site-password" content="Jura2026" />
 </head>
@@ -15,33 +110,44 @@
 <body>
   <!-- ── Mode Selection ── -->
   <section class="mode-screen" id="modeScreen">
-    <div class="mode-card">
-      <div class="mode-logo">⌨</div>
-      <h1>RechtFlott</h1>
-      <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
-      <div class="mode-actions">
-        <button class="btn btn--secondary" type="button" data-mode="learning">
-          <span class="btn-icon">📖</span>
-          <span>
-            <strong>Lernmodus</strong>
-            <small>Tastatur-Grundlagen in Kapiteln</small>
-          </span>
-        </button>
-        <button class="btn btn--primary" type="button" data-mode="legal">
-          <span class="btn-icon">⚖</span>
-          <span>
-            <strong>Juristische Begriffe</strong>
-            <small>Begriffe, Abkürzungen, Definitionen</small>
-          </span>
-        </button>
+    <div class="mode-viewport">
+      <div class="mode-card">
+        <div class="mode-logo">⌨</div>
+        <h1>RechtFlott</h1>
+        <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
+        <div class="mode-actions">
+          <button class="btn btn--secondary" type="button" data-mode="learning">
+            <span class="btn-icon">📖</span>
+            <span>
+              <strong>Lernmodus</strong>
+              <small>Tastatur-Grundlagen in Kapiteln</small>
+            </span>
+          </button>
+          <button class="btn btn--primary" type="button" data-mode="legal">
+            <span class="btn-icon">⚖</span>
+            <span>
+              <strong>Juristische Begriffe</strong>
+              <small>Begriffe, Abkürzungen, Definitionen</small>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
+    <aside class="mode-mission" role="note" aria-label="Hintergrund">
+      <p>In immer mehr Bundesländern werden juristische Staatsexamensklausuren am Computer geschrieben. Wer im
+        <strong>10-Finger-System</strong> sicher tippt, spart wertvolle Minuten pro Klausur. Erfahrungswerte zeigen: ab
+        ca. <strong>70 Wörtern pro Minute</strong> (WPM) kannst du dich voll auf den Inhalt konzentrieren, statt aufs
+        Tippen.
+      </p>
+      <p>RechtFlott verbindet systematisches <strong>Tastaturtraining</strong> mit <strong>juristischer
+          Fachsprache</strong>. Direkt im Browser, ohne Umwege.</p>
+    </aside>
   </section>
 
   <!-- ── App ── -->
   <div class="app hidden" id="app">
     <!-- Top bar -->
-    <header class="topbar">
+    <nav class="topbar" aria-label="Hauptnavigation">
       <div class="topbar-left">
         <button class="topbar-brand" id="changeMode" type="button">⌨ RechtFlott</button>
         <span class="chip" id="modeChip">Lernmodus</span>
@@ -61,7 +167,7 @@
         <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode">🌙</button>
         <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus">⌨</button>
       </div>
-    </header>
+    </nav>
 
     <div class="daily-bar" id="dailyBar">
       <div class="daily-timer-wrap">
@@ -103,7 +209,7 @@
       </aside>
 
       <!-- Trainer (center stage) -->
-      <section class="trainer" id="trainerPanel">
+      <article class="trainer" id="trainerPanel" aria-label="Tipptrainer">
         <div class="trainer-top">
           <button class="btn btn--ghost btn--sm" id="openSidebar" type="button">☰ Lektionen</button>
           <div class="progress">
@@ -188,7 +294,7 @@
         <div class="tips">
           <span>💡 Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
         </div>
-      </section>
+      </article>
     </main>
 
     <!-- Keyboard (collapsible) -->
@@ -221,6 +327,31 @@
 
   <canvas id="confetti" class="confetti-canvas"></canvas>
   <div class="global-impressum"><a href="impressum.html">Impressum</a></div>
+
+  <!-- Crawler-sichtbarer Content (für SEO/GEO) -->
+  <noscript>
+    <section style="max-width:800px;margin:40px auto;padding:20px;font-family:system-ui,sans-serif;">
+      <h1>RechtFlott: 10-Finger-Tipptraining für das juristische E-Examen</h1>
+      <p>RechtFlott ist ein 10-Finger-Tipptraining, das speziell für Jurastudierende und die Vorbereitung auf das
+        E-Examen (elektronisches Staatsexamen) entwickelt wurde.</p>
+      <h2>Funktionen</h2>
+      <ul>
+        <li><strong>Lernmodus:</strong> 30 Kapitel zum systematischen Erlernen des 10-Finger-Systems, von der
+          Grundstellung über alle Reihen bis zu Sonderzeichen und dem §-Zeichen.</li>
+        <li><strong>Jura-Modus:</strong> Juristische Fachbegriffe, Abkürzungen und Definitionen aus Strafrecht,
+          Zivilrecht und Öffentlichem Recht tippen. Die Inhalte sind KI-generiert und von Jurastudierenden kuratiert.
+        </li>
+        <li><strong>Zeitmodus:</strong> 60-Sekunden-Challenges mit WPM-Tracking.</li>
+        <li><strong>Virtuelle Tastatur:</strong> Fingerführung für jede Taste inklusive Shift-Logik.</li>
+      </ul>
+      <h2>Warum RechtFlott?</h2>
+      <p>Im E-Examen werden Klausuren am Computer geschrieben. Schnelles Tippen mit mindestens 70 WPM spart wertvolle
+        Zeit. RechtFlott trainiert gezielt juristische Fachsprache direkt im Browser.</p>
+      <p><em>Hinweis: Die juristischen Definitionen dienen ausschließlich als Tippübung und sind nicht
+          rechtsverbindlich.</em></p>
+      <p>Bitte aktivieren Sie JavaScript, um RechtFlott zu nutzen.</p>
+    </section>
+  </noscript>
   <script>
     // Lightweight client-side gate: reads meta[name=site-password]. If empty, gate is disabled.
     (function () {

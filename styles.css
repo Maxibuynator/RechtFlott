@@ -98,11 +98,22 @@ body {
 .mode-screen {
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: var(--bg);
   z-index: 100;
   animation: fadeIn .4s ease;
+  overflow-y: auto;
+}
+
+.mode-viewport {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .mode-card {
@@ -129,6 +140,22 @@ body {
   color: var(--muted);
   font-size: 15px;
   margin-bottom: 32px;
+}
+
+.mode-mission {
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  padding: 40px 32px 60px;
+  flex-shrink: 0;
+}
+
+.mode-mission p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  opacity: 0.6;
+  margin-bottom: 12px;
 }
 
 .mode-actions {
@@ -846,6 +873,8 @@ body.timed-active .progress-fill {
   font-size: 22px;
   line-height: 1.7;
   min-height: 220px;
+  max-height: 320px;
+  overflow-y: auto;
   cursor: text;
   transition: border-color var(--transition), box-shadow var(--transition);
   box-shadow: var(--shadow);

@@ -128,7 +128,7 @@ const modes = {
       { id: "ch-19-2", chapter: "Kapitel 19", title: "Sonder: Komma", description: "Aufzählung.", text: "eins, zwei, drei, vier, fünf, äpfel, birnen, nüsse, obst, brot, butter, käse, milch, wasser, saft" },
       { id: "ch-19-3", chapter: "Kapitel 19", title: "Sonder: Strich", description: "Kopplung.", text: "e-mail u-bahn s-bahn x-ray a-b c-d n-tv check-in log-in start-up stand-by on-off re-start" },
       { id: "ch-19-4", chapter: "Kapitel 19", title: "Sonder: Mix", description: "Alles zusammen.", text: "ja, nein. doch, oder. so, ist, es. eins-zwei-drei. gut, danke. bitte, gern. na, klar. schon, fertig." },
-      { id: "ch-19-5", chapter: "Kapitel 19", title: "Sonder: Satz", description: "Reale Anwendung.", text: "hallo, wie geht es dir? mir geht es gut, danke der nachfrage. was machst du heute, hast du zeit?" },
+      { id: "ch-19-5", chapter: "Kapitel 19", title: "Sonder: Satz", description: "Reale Anwendung.", text: "hallo, wie geht es dir. mir geht es gut, danke der nachfrage. was machst du heute, hast du zeit." },
 
       /* ── Kapitel 20: Großschreibung (Shift) ── */
       { id: "ch-20-1", chapter: "Kapitel 20", title: "Linke Hand Groß", description: "Rechte Shift-Taste benutzen.", text: "F F F A A A S S S D D D A S D F A S D F F A S D A F D S F D S A D F S A" },
@@ -768,9 +768,19 @@ function selectLesson(lesson) {
 }
 
 // ── Mode / Variant switching ─────────────────
-function setMode(modeId) {
+function setMode(modeId, updateHash) {
   activeMode = modes[modeId];
   modeChip.textContent = activeMode.chip || activeMode.name;
+
+  // ── Hash-Routing & dynamic title ──
+  if (updateHash) {
+    const hashMap = { learning: "#lernmodus", legal: "#jura" };
+    const titleMap = { learning: "Lernmodus", legal: "Juristische Begriffe" };
+    if (hashMap[modeId]) {
+      history.replaceState(null, "", hashMap[modeId]);
+    }
+    document.title = (titleMap[modeId] || "RechtFlott") + " \u2014 RechtFlott";
+  }
 
   if (activeMode.variants) {
     activeVariantId = "mix";
@@ -1055,9 +1065,17 @@ function updateTypingFeedback() {
   } else {
     highlightKey(getNextChar());
   }
+
+  // Auto-scroll: keep active character in view
+  const activeSpan = typingArea.querySelector('.active');
+  if (activeSpan) {
+    activeSpan.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 function handleInput(e) {
+  // Skip feedback during IME/composition (prevents "all red" with §, etc.)
+  if (e && e.isComposing) return;
   if (completed) {
     e.target.value = e.target.value.slice(0, currentRenderText.length || activeLesson.text.length);
     return;
@@ -1127,20 +1145,23 @@ function showCompletion(stats) {
     completionBadge.classList.add("hidden");
   }
 
-  // ── Retry banner for < 50 WPM (legal mode only, not timed) ──
+  // ── Retry banner for < 50 WPM (learning mode only, not timed) ──
   const retryBanner = $("retryBanner");
   const nextBtn = $("nextLesson");
+  const repeatBtn = $("repeatLesson");
   const isLowWpm = stats.wpm < 50 && !timedModeActive && activeMode && activeMode.id === "learning";
   if (retryBanner) {
     retryBanner.classList.toggle("hidden", !isLowWpm);
   }
   if (isLowWpm) {
     nextBtn.textContent = "Nochmal versuchen ↻";
-    // Override: clicking "Nochmal versuchen" repeats same exercise
     nextBtn._retryMode = true;
+    // Hide "Wiederholen" to avoid duplicate retry buttons
+    if (repeatBtn) repeatBtn.classList.add("hidden");
   } else {
     nextBtn._retryMode = false;
     nextBtn.textContent = timedModeActive ? "Nächste Runde →" : "Nächste Lektion →";
+    if (repeatBtn) repeatBtn.classList.remove("hidden");
   }
 
   // ── Daily goal banner ──
@@ -1620,11 +1641,14 @@ function init() {
   $("changeMode").addEventListener("click", () => {
     app.classList.add("hidden");
     modeScreen.classList.remove("hidden");
+    // Reset hash & title to start screen
+    history.replaceState(null, "", window.location.pathname);
+    document.title = "RechtFlott \u2014 10-Finger-Tipptraining f\u00fcr das juristische E-Examen";
   });
 
   document.querySelectorAll("[data-mode]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      setMode(btn.dataset.mode);
+      setMode(btn.dataset.mode, true);
       modeScreen.classList.add("hidden");
       app.classList.remove("hidden");
       // Always show keyboard by default
@@ -1682,7 +1706,22 @@ function init() {
   setInterval(() => { if (startTime && !completed) updateStats(); }, 1000);
 
   // Load data and start
-  loadDatasets().then(() => setMode("learning"));
+  loadDatasets().then(() => {
+    // ── Hash-Routing: auto-select mode from URL hash ──
+    const hashModeMap = { "#lernmodus": "learning", "#jura": "legal" };
+    const hashMode = hashModeMap[window.location.hash.toLowerCase()];
+    if (hashMode) {
+      setMode(hashMode, true);
+      modeScreen.classList.add("hidden");
+      app.classList.remove("hidden");
+      keyboardVisible = true;
+      keyboardWrap.classList.remove("collapsed");
+      document.body.classList.add("keyboard-open");
+    } else {
+      // Pre-load learning data but stay on mode selection screen
+      setMode("learning", false);
+    }
+  });
 
   // Daily timer: load saved state
   loadDailyTimer();
