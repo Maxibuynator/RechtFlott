@@ -789,7 +789,7 @@ function setMode(modeId, updateHash) {
     const hashMap = { learning: "#lernmodus", legal: "#jura" };
     const titleMap = { learning: "Lernmodus", legal: "Juristische Begriffe" };
     if (hashMap[modeId]) {
-      history.replaceState(null, "", hashMap[modeId]);
+      history.pushState({ mode: modeId }, "", hashMap[modeId]);
     }
     document.title = (titleMap[modeId] || "RechtFlott") + " \u2014 RechtFlott";
   }
@@ -1162,42 +1162,77 @@ function showCompletion(stats) {
         completionSub.textContent += " — 80 WPM für Examensready!";
       }
     }
-  } else if (isNewRecord && stats.wpm > 10) {
-    completionIcon.textContent = "🏆";
-    completionTitle.textContent = "Neuer Rekord!";
-    completionSub.textContent = `${stats.wpm} WPM — deine neue Bestleistung.`;
-    completionBadge.textContent = "🏆 Neuer Rekord!";
-    completionBadge.classList.remove("hidden");
-    triggerConfetti();
-  } else if (stats.acc >= 95 && stats.wpm > 20) {
-    completionIcon.textContent = "🔥";
-    completionTitle.textContent = "Stark!";
-    completionSub.textContent = `${stats.acc}% Genauigkeit bei ${stats.wpm} WPM.`;
+  } else if (activeMode && activeMode.id === "learning" && !timedModeActive) {
+    // ── Learning mode: 3-tier WPM feedback ──
+    const retryBanner = $("retryBanner");
+    const nextBtn = $("nextLesson");
+    const repeatBtn = $("repeatLesson");
     completionBadge.classList.add("hidden");
-  } else {
-    completionIcon.textContent = "✅";
-    completionTitle.textContent = "Geschafft!";
-    completionSub.textContent = "Weiter so. Jede Lektion zählt.";
-    completionBadge.classList.add("hidden");
-  }
 
-  // ── Retry banner for < 50 WPM (learning mode only, not timed) ──
-  const retryBanner = $("retryBanner");
-  const nextBtn = $("nextLesson");
-  const repeatBtn = $("repeatLesson");
-  const isLowWpm = stats.wpm < 50 && !timedModeActive && activeMode && activeMode.id === "learning";
-  if (retryBanner) {
-    retryBanner.classList.toggle("hidden", !isLowWpm);
-  }
-  if (isLowWpm) {
-    nextBtn.textContent = "Nochmal versuchen ↻";
-    nextBtn._retryMode = true;
-    // Hide "Wiederholen" to avoid duplicate retry buttons
-    if (repeatBtn) repeatBtn.classList.add("hidden");
+    if (isNewRecord && stats.wpm > 10) {
+      completionIcon.textContent = "🏆";
+      completionTitle.textContent = "Neuer Rekord!";
+      completionSub.textContent = `${stats.wpm} WPM — deine neue Bestleistung!`;
+      completionBadge.textContent = "🏆 Neuer Rekord!";
+      completionBadge.classList.remove("hidden");
+      triggerConfetti();
+      if (retryBanner) retryBanner.classList.add("hidden");
+      nextBtn._retryMode = false;
+      nextBtn.textContent = "Nächste Lektion →";
+      if (repeatBtn) repeatBtn.classList.remove("hidden");
+    } else if (stats.wpm < 20) {
+      completionIcon.textContent = "💪";
+      completionTitle.textContent = "Übung macht den Meister!";
+      completionSub.textContent = `${stats.wpm} WPM — versuch es nochmal, du schaffst das!`;
+      if (retryBanner) retryBanner.classList.remove("hidden");
+      nextBtn.textContent = "Nochmal versuchen ↻";
+      nextBtn._retryMode = true;
+      if (repeatBtn) repeatBtn.classList.add("hidden");
+    } else if (stats.wpm < 40) {
+      completionIcon.textContent = "👍";
+      completionTitle.textContent = "Gut gemacht!";
+      completionSub.textContent = `${stats.wpm} WPM — da geht noch mehr!`;
+      if (retryBanner) retryBanner.classList.add("hidden");
+      nextBtn._retryMode = false;
+      nextBtn.textContent = "Nächste Lektion →";
+      if (repeatBtn) repeatBtn.classList.remove("hidden");
+    } else {
+      completionIcon.textContent = "🔥";
+      completionTitle.textContent = "Perfekt!";
+      completionSub.textContent = `${stats.wpm} WPM — stark, weiter so!`;
+      if (retryBanner) retryBanner.classList.add("hidden");
+      nextBtn._retryMode = false;
+      nextBtn.textContent = "Nächste Lektion →";
+      if (repeatBtn) repeatBtn.classList.remove("hidden");
+    }
   } else {
+    // ── Non-learning, non-timed: generic feedback ──
+    const retryBanner = $("retryBanner");
+    const nextBtn = $("nextLesson");
+    const repeatBtn = $("repeatLesson");
+    if (retryBanner) retryBanner.classList.add("hidden");
     nextBtn._retryMode = false;
-    nextBtn.textContent = timedModeActive ? "Nächste Runde →" : "Nächste Lektion →";
+    nextBtn.textContent = "Nächste Lektion →";
     if (repeatBtn) repeatBtn.classList.remove("hidden");
+
+    if (isNewRecord && stats.wpm > 10) {
+      completionIcon.textContent = "🏆";
+      completionTitle.textContent = "Neuer Rekord!";
+      completionSub.textContent = `${stats.wpm} WPM — deine neue Bestleistung.`;
+      completionBadge.textContent = "🏆 Neuer Rekord!";
+      completionBadge.classList.remove("hidden");
+      triggerConfetti();
+    } else if (stats.acc >= 95 && stats.wpm > 20) {
+      completionIcon.textContent = "🔥";
+      completionTitle.textContent = "Stark!";
+      completionSub.textContent = `${stats.acc}% Genauigkeit bei ${stats.wpm} WPM.`;
+      completionBadge.classList.add("hidden");
+    } else {
+      completionIcon.textContent = "✅";
+      completionTitle.textContent = "Geschafft!";
+      completionSub.textContent = "Weiter so. Jede Lektion zählt.";
+      completionBadge.classList.add("hidden");
+    }
   }
 
   // ── Daily goal banner ──
@@ -1677,8 +1712,8 @@ function init() {
   $("changeMode").addEventListener("click", () => {
     app.classList.add("hidden");
     modeScreen.classList.remove("hidden");
-    // Reset hash & title to start screen
-    history.replaceState(null, "", window.location.pathname);
+    // Push a new history entry for the start screen
+    history.pushState({ mode: null }, "", window.location.pathname);
     document.title = "RechtFlott \u2014 10-Finger-Tipptraining f\u00fcr das juristische E-Examen";
   });
 
@@ -1764,6 +1799,27 @@ function init() {
 
   // Save daily timer on page close
   window.addEventListener("beforeunload", () => saveDailyTimer());
+
+  // ── Browser back/forward navigation ──
+  window.addEventListener("popstate", (e) => {
+    const hash = window.location.hash.toLowerCase();
+    const hashModeMap = { "#lernmodus": "learning", "#jura": "legal" };
+    const mode = hashModeMap[hash];
+    if (mode) {
+      setMode(mode, false); // false = don't push again
+      modeScreen.classList.add("hidden");
+      app.classList.remove("hidden");
+      keyboardVisible = true;
+      keyboardWrap.classList.remove("collapsed");
+      document.body.classList.add("keyboard-open");
+      typingInput.focus();
+    } else {
+      // Back to mode selection screen
+      app.classList.add("hidden");
+      modeScreen.classList.remove("hidden");
+      document.title = "RechtFlott \u2014 10-Finger-Tipptraining f\u00fcr das juristische E-Examen";
+    }
+  });
 }
 
 init();

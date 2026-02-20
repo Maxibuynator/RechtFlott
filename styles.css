@@ -412,10 +412,11 @@ body {
 .daily-wpm-chart {
   display: flex;
   align-items: flex-end;
-  justify-content: center;
   gap: 6px;
   height: 70px;
-  padding: 0 8px;
+  padding: 4px 8px;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .wpm-bar-wrap {
@@ -423,8 +424,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  flex: 1;
-  max-width: 28px;
+  flex: 0 0 24px;
   height: 100%;
   justify-content: flex-end;
 }
@@ -1660,37 +1660,84 @@ body.keyboard-open .sidebar {
   transform: translateY(-2px);
 }
 
-/* ── Responsive ── */
+/* ── Responsive (Medium) ── */
 @media (max-width: 860px) {
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
+    z-index: 30;
   }
 
-  /* ── Responsive (Small) ── */
-  @media (max-width: 600px) {
-    .main {
-      padding: 12px;
-    }
+  .topbar {
+    flex-wrap: wrap;
+  }
 
-    .topbar {
-      padding: 8px 12px;
-    }
+  .topbar-stats {
+    gap: 10px;
+  }
 
-    .topbar-stats {
-      display: none;
-    }
+  .stat-val {
+    font-size: 15px;
+  }
 
-    .typing-zone {
-      font-size: 18px;
-      padding: 16px;
-      min-height: 180px;
-    }
+  .stat-lbl {
+    font-size: 9px;
+  }
 
-    .sidebar {
-      width: 260px;
-    }
+  .completion-card {
+    max-width: 90vw;
+  }
+}
+
+/* ── Responsive (Small) ── */
+@media (max-width: 600px) {
+  .main {
+    padding: 12px;
+  }
+
+  .topbar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .topbar-left {
+    min-width: 0;
+  }
+
+  .topbar-brand {
+    font-size: 14px;
+  }
+
+  .topbar-stats {
+    display: none;
+  }
+
+  .typing-zone {
+    font-size: 18px;
+    padding: 16px;
+    min-height: 180px;
+  }
+
+  .sidebar {
+    width: 260px;
+  }
+
+  .completion-card {
+    padding: 20px;
+    max-width: 90vw;
+  }
+
+  .daily-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .keyboard-grid {
+    gap: 3px;
   }
 }
