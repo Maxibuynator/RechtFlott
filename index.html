@@ -112,19 +112,41 @@
   <section class="mode-screen" id="modeScreen">
     <div class="mode-viewport">
       <div class="mode-card">
-        <div class="mode-logo">⌨</div>
+        <div class="mode-logo"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="M6 8h.01" />
+            <path d="M10 8h.01" />
+            <path d="M14 8h.01" />
+            <path d="M18 8h.01" />
+            <path d="M8 12h.01" />
+            <path d="M12 12h.01" />
+            <path d="M16 12h.01" />
+            <path d="M7 16h10" />
+          </svg></div>
         <h1>RechtFlott</h1>
         <p class="mode-sub">10-Finger-Training für das juristische E-Examen</p>
         <div class="mode-actions" data-nosnippet>
           <button class="btn btn--secondary" type="button" data-mode="learning">
-            <span class="btn-icon">📖</span>
+            <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg></span>
             <span>
               <strong>Lernmodus</strong>
               <small>Tastatur-Grundlagen in Kapiteln</small>
             </span>
           </button>
           <button class="btn btn--primary" type="button" data-mode="legal">
-            <span class="btn-icon">⚖</span>
+            <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                <path d="M7 21h10" />
+                <path d="M12 3v18" />
+                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+              </svg></span>
             <span>
               <strong>Juristische Begriffe</strong>
               <small>Begriffe, Abkürzungen, Definitionen</small>
@@ -149,7 +171,19 @@
     <!-- Top bar -->
     <nav class="topbar" aria-label="Hauptnavigation">
       <div class="topbar-left">
-        <button class="topbar-brand" id="changeMode" type="button">⌨ RechtFlott</button>
+        <button class="topbar-brand" id="changeMode" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="18"
+            height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="M6 8h.01" />
+            <path d="M10 8h.01" />
+            <path d="M14 8h.01" />
+            <path d="M18 8h.01" />
+            <path d="M8 12h.01" />
+            <path d="M12 12h.01" />
+            <path d="M16 12h.01" />
+            <path d="M7 16h10" />
+          </svg> RechtFlott</button>
         <span class="chip" id="modeChip">Lernmodus</span>
       </div>
       <div class="topbar-stats" id="statsBar">
@@ -164,8 +198,24 @@
         </div>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode">🌙</button>
-        <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus">⌨</button>
+        <button class="icon-btn" id="toggleDark" type="button" title="Dark Mode"><svg xmlns="http://www.w3.org/2000/svg"
+            width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg></button>
+        <button class="icon-btn" id="toggleKeyboard" type="button" title="Tastatur ein/aus"><svg
+            xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="M6 8h.01" />
+            <path d="M10 8h.01" />
+            <path d="M14 8h.01" />
+            <path d="M18 8h.01" />
+            <path d="M8 12h.01" />
+            <path d="M12 12h.01" />
+            <path d="M16 12h.01" />
+            <path d="M7 16h10" />
+          </svg></button>
       </div>
     </nav>
 
@@ -179,7 +229,12 @@
       </div>
       <span class="daily-label" id="dailyLabel">Tagesziel: 20 min üben</span>
       <span class="daily-sep">·</span>
-      <span class="daily-streak" id="dailyStreak">🔥 0 Tage</span>
+      <span class="daily-streak" id="dailyStreak"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path
+            d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+        </svg> 0 Tage</span>
     </div>
 
     <!-- Main layout -->
@@ -188,7 +243,12 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-head">
           <h2>Lektionen</h2>
-          <button class="icon-btn sidebar-close" id="closeSidebar" type="button">✕</button>
+          <button class="icon-btn sidebar-close" id="closeSidebar" type="button"><svg xmlns="http://www.w3.org/2000/svg"
+              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg></button>
         </div>
         <div class="tabs hidden" id="legalToggle"></div>
         <div class="tabs tabs--sm hidden" id="rechtsgebietToggle">
@@ -200,7 +260,15 @@
         <div class="sidebar-filters">
           <input id="lessonSearch" class="input" type="text" placeholder="Suchen…" />
           <select id="chapterSelect" class="input hidden" aria-label="Kapitel"></select>
-          <button id="randomizeChapterBtn" class="btn btn--ghost btn--sm" title="Zufallsübung">🎲</button>
+          <button id="randomizeChapterBtn" class="btn btn--ghost btn--sm" title="Zufallsübung"><svg
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+              <path d="m18 2 4 4-4 4" />
+              <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+              <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+              <path d="m18 14 4 4-4 4" />
+            </svg></button>
         </div>
         <div class="lesson-list" id="lessonList"></div>
         <div class="load-more">
@@ -211,12 +279,23 @@
       <!-- Trainer (center stage) -->
       <article class="trainer" id="trainerPanel" aria-label="Tipptrainer">
         <div class="trainer-top">
-          <button class="btn btn--ghost btn--sm" id="openSidebar" type="button">☰ Lektionen</button>
+          <button class="btn btn--ghost btn--sm" id="openSidebar" type="button"><svg xmlns="http://www.w3.org/2000/svg"
+              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" x2="20" y1="12" y2="12" />
+              <line x1="4" x2="20" y1="6" y2="6" />
+              <line x1="4" x2="20" y1="18" y2="18" />
+            </svg> Lektionen</button>
           <div class="progress">
             <div class="progress-fill" id="progressBar"></div>
           </div>
           <div class="trainer-actions">
-            <button id="restart" class="btn btn--ghost btn--sm">↻ Neu</button>
+            <button id="restart" class="btn btn--ghost btn--sm"><svg xmlns="http://www.w3.org/2000/svg" width="14"
+                height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg> Neu</button>
             <button id="skipLesson" class="btn btn--ghost btn--sm" title="Überspringen"><svg
                 xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -262,7 +341,13 @@
         <!-- Completion overlay -->
         <div class="completion" id="completion">
           <div class="completion-card">
-            <div class="completion-icon" id="completionIcon">🎯</div>
+            <div class="completion-icon" id="completionIcon"><svg xmlns="http://www.w3.org/2000/svg" width="48"
+                height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg></div>
             <h3 id="completionTitle">Fertig!</h3>
             <p id="completionSub">Saubere Runde.</p>
             <div class="completion-stats">
@@ -270,9 +355,24 @@
               <div class="cs"><span class="cs-val" id="cAcc">100%</span><span class="cs-lbl">Genauigkeit</span></div>
               <div class="cs"><span class="cs-val" id="cTime">0:00</span><span class="cs-lbl">Zeit</span></div>
             </div>
-            <div class="completion-badge hidden" id="completionBadge">🏆 Neuer Rekord!</div>
+            <div class="completion-badge hidden" id="completionBadge"><svg xmlns="http://www.w3.org/2000/svg" width="18"
+                height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+              </svg> Neuer Rekord!</div>
             <div class="daily-goal-banner hidden" id="dailyGoalBanner">
-              <div class="daily-goal-header">🎯 Tagesziel erreicht!</div>
+              <div class="daily-goal-header"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <circle cx="12" cy="12" r="6" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg> Tagesziel erreicht!</div>
               <div class="daily-goal-subtitle">Deine heutigen Sessions:</div>
               <div class="daily-wpm-chart" id="dailyWpmChart"></div>
             </div>
@@ -292,7 +392,13 @@
         </div>
 
         <div class="tips">
-          <span>💡 Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+            </svg> Halte die Hände in der Grundstellung (ASDF JKLÖ)</span>
         </div>
       </article>
     </main>

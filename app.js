@@ -2,6 +2,24 @@
 /*  RechtFlott — 10-Finger Typing for Lawyers  */
 /* ──────────────────────────────────────────── */
 
+// ── Lucide Icon Helper ───────────────────────
+function lucide(name, size = 18) {
+  const p = {
+    'scale': '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+    'moon': '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    'flame': '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    'rotate-ccw': '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+    'target': '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+    'trophy': '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    'timer': '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+    'thumbs-up': '<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>',
+    'circle-check': '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    'zap': '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  };
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p[name] || ''}</svg>`;
+}
+
 // ── Modes & lesson data ──────────────────────
 // ── Chapter Metadata ──
 const chapterData = {
@@ -432,7 +450,7 @@ function updateDailyTimerUI() {
   // Update label
   if (dailyLabel) {
     if (dailySecondsRemaining <= 0) {
-      dailyLabel.textContent = "✅ Tagesziel erreicht!";
+      dailyLabel.innerHTML = `${lucide('circle-check', 16)} Tagesziel erreicht!`;
     } else {
       dailyLabel.textContent = `Tagesziel: 20 min üben`;
     }
@@ -441,7 +459,7 @@ function updateDailyTimerUI() {
   // Update streak
   const streak = getStreak();
   if (dailyStreak) {
-    dailyStreak.textContent = streak > 0 ? `🔥 ${streak} Tag${streak > 1 ? "e" : ""}` : "🔥 Starte deinen Streak!";
+    dailyStreak.innerHTML = streak > 0 ? `${lucide('flame', 14)} ${streak} Tag${streak > 1 ? "e" : ""}` : `${lucide('flame', 14)} Starte deinen Streak!`;
   }
 }
 
@@ -491,7 +509,7 @@ function toggleDarkMode() {
 }
 
 function updateDarkIcon() {
-  $("toggleDark").textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+  $("toggleDark").innerHTML = document.body.classList.contains("dark") ? lucide('sun') : lucide('moon');
 }
 
 // ── Keyboard layout ──────────────────────────
@@ -1140,21 +1158,21 @@ function showCompletion(stats) {
   if (timedModeActive) {
     const typed = typingInput.value.length;
     if (stats.wpm >= 80) {
-      completionIcon.textContent = "⚖️";
+      completionIcon.innerHTML = lucide('scale', 48);
       completionTitle.textContent = "Examensready!";
       completionSub.textContent = `${stats.wpm} WPM · ${stats.acc}% Genauigkeit · ${typed} Zeichen`;
-      completionBadge.textContent = "⚖️ Examensbereit!";
+      completionBadge.innerHTML = `${lucide('scale')} Examensbereit!`;
       completionBadge.classList.remove("hidden");
       triggerConfetti();
     } else if (isNewRecord && stats.wpm > 10) {
-      completionIcon.textContent = "🏆";
+      completionIcon.innerHTML = lucide('trophy', 48);
       completionTitle.textContent = "Neuer Rekord!";
       completionSub.textContent = `${stats.wpm} WPM · ${stats.acc}% · ${typed} Zeichen — neue Bestleistung!`;
-      completionBadge.textContent = "🏆 Neuer Rekord!";
+      completionBadge.innerHTML = `${lucide('trophy')} Neuer Rekord!`;
       completionBadge.classList.remove("hidden");
       triggerConfetti();
     } else {
-      completionIcon.textContent = "⏱️";
+      completionIcon.innerHTML = lucide('timer', 48);
       completionTitle.textContent = "Zeit vorbei!";
       completionSub.textContent = `${stats.wpm} WPM · ${stats.acc}% Genauigkeit · ${typed} Zeichen`;
       completionBadge.classList.add("hidden");
@@ -1170,10 +1188,10 @@ function showCompletion(stats) {
     completionBadge.classList.add("hidden");
 
     if (isNewRecord && stats.wpm > 10) {
-      completionIcon.textContent = "🏆";
+      completionIcon.innerHTML = lucide('trophy', 48);
       completionTitle.textContent = "Neuer Rekord!";
       completionSub.textContent = `${stats.wpm} WPM — deine neue Bestleistung!`;
-      completionBadge.textContent = "🏆 Neuer Rekord!";
+      completionBadge.innerHTML = `${lucide('trophy')} Neuer Rekord!`;
       completionBadge.classList.remove("hidden");
       triggerConfetti();
       if (retryBanner) retryBanner.classList.add("hidden");
@@ -1181,15 +1199,15 @@ function showCompletion(stats) {
       nextBtn.textContent = "Nächste Lektion →";
       if (repeatBtn) repeatBtn.classList.remove("hidden");
     } else if (stats.wpm < 20) {
-      completionIcon.textContent = "💪";
+      completionIcon.innerHTML = lucide('zap', 48);
       completionTitle.textContent = "Übung macht den Meister!";
       completionSub.textContent = `${stats.wpm} WPM — versuch es nochmal, du schaffst das!`;
       if (retryBanner) retryBanner.classList.remove("hidden");
-      nextBtn.textContent = "Nochmal versuchen ↻";
+      nextBtn.innerHTML = `${lucide('rotate-ccw', 14)} Nochmal versuchen`;
       nextBtn._retryMode = true;
       if (repeatBtn) repeatBtn.classList.add("hidden");
     } else if (stats.wpm < 40) {
-      completionIcon.textContent = "👍";
+      completionIcon.innerHTML = lucide('thumbs-up', 48);
       completionTitle.textContent = "Gut gemacht!";
       completionSub.textContent = `${stats.wpm} WPM — da geht noch mehr!`;
       if (retryBanner) retryBanner.classList.add("hidden");
@@ -1197,7 +1215,7 @@ function showCompletion(stats) {
       nextBtn.textContent = "Nächste Lektion →";
       if (repeatBtn) repeatBtn.classList.remove("hidden");
     } else {
-      completionIcon.textContent = "🔥";
+      completionIcon.innerHTML = lucide('flame', 48);
       completionTitle.textContent = "Perfekt!";
       completionSub.textContent = `${stats.wpm} WPM — stark, weiter so!`;
       if (retryBanner) retryBanner.classList.add("hidden");
@@ -1216,19 +1234,19 @@ function showCompletion(stats) {
     if (repeatBtn) repeatBtn.classList.remove("hidden");
 
     if (isNewRecord && stats.wpm > 10) {
-      completionIcon.textContent = "🏆";
+      completionIcon.innerHTML = lucide('trophy', 48);
       completionTitle.textContent = "Neuer Rekord!";
       completionSub.textContent = `${stats.wpm} WPM — deine neue Bestleistung.`;
-      completionBadge.textContent = "🏆 Neuer Rekord!";
+      completionBadge.innerHTML = `${lucide('trophy')} Neuer Rekord!`;
       completionBadge.classList.remove("hidden");
       triggerConfetti();
     } else if (stats.acc >= 95 && stats.wpm > 20) {
-      completionIcon.textContent = "🔥";
+      completionIcon.innerHTML = lucide('flame', 48);
       completionTitle.textContent = "Stark!";
       completionSub.textContent = `${stats.acc}% Genauigkeit bei ${stats.wpm} WPM.`;
       completionBadge.classList.add("hidden");
     } else {
-      completionIcon.textContent = "✅";
+      completionIcon.innerHTML = lucide('circle-check', 48);
       completionTitle.textContent = "Geschafft!";
       completionSub.textContent = "Weiter so. Jede Lektion zählt.";
       completionBadge.classList.add("hidden");
