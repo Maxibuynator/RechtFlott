@@ -287,6 +287,15 @@ let wpmHistory = [];
 let keyboardVisible = true;
 let sidebarOpen = true;
 
+// ── Performance caches ───────────────────────
+let cachedSpans = [];          // Cached char-span references (set by renderText)
+let lastTypedLength = 0;       // Track previous input length for incremental updates
+let lastHighlightedKey = null; // Previously highlighted keyboard key element
+let lastHighlightedShift = null;
+let lastHighlightedFinger = null;
+let shakeTimeout = null;       // Debounce shake animation
+let scrollPending = false;     // RAF gate for scroll
+
 // ── Timed mode state ─────────────────────────
 let timedModeActive = false;
 const TIMED_DURATION = 60; // seconds
@@ -568,7 +577,9 @@ const shiftPairs = {
 };
 
 function highlightKey(key) {
-  keyboard.querySelectorAll(".key").forEach((el) => el.classList.remove("active", "active-shift"));
+  // Remove only previously highlighted elements (instead of iterating ALL keys)
+  if (lastHighlightedKey) { lastHighlightedKey.classList.remove("active"); lastHighlightedKey = null; }
+  if (lastHighlightedShift) { lastHighlightedShift.classList.remove("active-shift"); lastHighlightedShift = null; }
   if (!key) { highlightFinger(""); updateFingerHint(""); return; }
 
   // Check for Shift
@@ -584,7 +595,7 @@ function highlightKey(key) {
 
   // Highlight Target
   const targetEl = keyboard.querySelector(`[data-key="${targetKey}"]`);
-  if (targetEl) targetEl.classList.add("active");
+  if (targetEl) { targetEl.classList.add("active"); lastHighlightedKey = targetEl; }
 
   // Highlight Finger
   const fid = fingerMap[targetKey] || "";
@@ -600,7 +611,7 @@ function highlightKey(key) {
       shiftKey = "shift_r"; // Left hand key -> Right Shift
     }
     const shiftEl = keyboard.querySelector(`[data-key="${shiftKey}"]`);
-    if (shiftEl) shiftEl.classList.add("active-shift");
+    if (shiftEl) { shiftEl.classList.add("active-shift"); lastHighlightedShift = shiftEl; }
   }
 
   updateFingerHint(fid, key, useShift);
@@ -617,10 +628,11 @@ function updateFingerHint(fingerId, key, shift) {
 }
 
 function highlightFinger(id) {
-  fingerLegend.querySelectorAll(".finger-pill").forEach((p) => p.classList.remove("active"));
+  // Remove only the previously highlighted pill (instead of iterating ALL pills)
+  if (lastHighlightedFinger) { lastHighlightedFinger.classList.remove("active"); lastHighlightedFinger = null; }
   if (!id) return;
   const t = fingerLegend.querySelector(`[data-finger="${id}"]`);
-  if (t) t.classList.add("active");
+  if (t) { t.classList.add("active"); lastHighlightedFinger = t; }
 }
 
 // ── Variant metadata for sidebar ─────────────
@@ -891,12 +903,14 @@ function updateDefPanel() {
 // ── Typing logic ─────────────────────────────
 function renderText() {
   typingArea.innerHTML = "";
+  cachedSpans = [];
   if (!activeLesson) return;
   // Prepare renderable text (normalize ellipsis etc.) and group characters into word wrappers
   const text = normalizeText(activeLesson.text || "");
   // store current render text length for progress/completion calculations
   currentRenderText = text;
-  // Simple, standard rendering: just chars and spaces
+  // Build all spans in a DocumentFragment for a single DOM insertion
+  const frag = document.createDocumentFragment();
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     const isSpace = /\s/.test(char);
@@ -912,8 +926,11 @@ function renderText() {
     }
 
     if (i === 0) span.classList.add('active');
-    typingArea.appendChild(span);
+    frag.appendChild(span);
   }
+  typingArea.appendChild(frag);
+  // Cache all span references once (avoids querySelectorAll on every keystroke)
+  cachedSpans = Array.from(typingArea.children);
 }
 
 // Hold the normalized text currently rendered (used for progress/completion)
@@ -932,6 +949,7 @@ function resetSession() {
   wpmHistory = [];
   errors = 0;
   completed = false;
+  lastTypedLength = 0;
   completion.classList.remove("show");
   stopTimedMode();
   if (timedModeActive) {
@@ -1024,41 +1042,55 @@ function updateStats() {
 }
 
 function updateTypingFeedback() {
-  const typed = typingInput.value.split("");
-  const spans = typingArea.querySelectorAll("[data-char]");
-  errors = 0;
-  let hadError = false;
+  const typed = typingInput.value;
+  const spans = cachedSpans;
+  const typedLen = typed.length;
+  const prevLen = lastTypedLength;
 
-  spans.forEach((span, i) => {
+  // Determine the range of spans that need updating (only the diff)
+  const updateStart = Math.max(0, Math.min(prevLen, typedLen) - 1);
+  const updateEnd = Math.min(Math.max(prevLen, typedLen), spans.length - 1);
+
+  // Update only the changed range of spans
+  for (let i = updateStart; i <= updateEnd; i++) {
+    const span = spans[i];
     const ch = typed[i];
     span.classList.remove("correct", "incorrect", "active");
     if (ch == null) {
-      if (i === typed.length) span.classList.add("active");
-      return;
-    }
-    if (ch === span.dataset.char) {
+      if (i === typedLen) span.classList.add("active");
+    } else if (ch === span.dataset.char) {
       span.classList.add("correct");
     } else {
       span.classList.add("incorrect");
-      errors += 1;
+    }
+  }
+
+  // Count total errors across all typed characters (lightweight – no DOM ops)
+  errors = 0;
+  let hadError = false;
+  for (let i = 0; i < typedLen && i < spans.length; i++) {
+    if (typed[i] !== spans[i].dataset.char) {
+      errors++;
       hadError = true;
     }
-  });
+  }
 
-  // Shake on error
-  if (hadError && typed.length > 0) {
-    const lastIdx = typed.length - 1;
-    const lastSpan = spans[lastIdx];
+  lastTypedLength = typedLen;
+
+  // Shake on error (debounced — don't stack timeouts)
+  if (hadError && typedLen > 0) {
+    const lastSpan = spans[typedLen - 1];
     if (lastSpan && lastSpan.classList.contains("incorrect")) {
+      if (shakeTimeout) clearTimeout(shakeTimeout);
       typingArea.classList.add("shake");
-      setTimeout(() => typingArea.classList.remove("shake"), 400);
+      shakeTimeout = setTimeout(() => { typingArea.classList.remove("shake"); shakeTimeout = null; }, 400);
     }
   }
 
   updateProgress();
   const stats = updateStats();
 
-  if (typed.length >= currentRenderText.length && !timedModeActive) {
+  if (typedLen >= currentRenderText.length && !timedModeActive) {
     completed = true;
     highlightKey("");
     showCompletion(stats);
@@ -1066,10 +1098,14 @@ function updateTypingFeedback() {
     highlightKey(getNextChar());
   }
 
-  // Auto-scroll: keep active character in view
-  const activeSpan = typingArea.querySelector('.active');
-  if (activeSpan) {
-    activeSpan.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Auto-scroll: RAF-gated (prevents layout thrashing on fast typing)
+  if (!scrollPending) {
+    scrollPending = true;
+    requestAnimationFrame(() => {
+      const active = typedLen < spans.length ? spans[typedLen] : null;
+      if (active) active.scrollIntoView({ block: 'nearest' });
+      scrollPending = false;
+    });
   }
 }
 
