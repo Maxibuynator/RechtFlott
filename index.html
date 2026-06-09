@@ -171,7 +171,7 @@
   </section>
 
   <!-- ── App ── -->
-  <div class="app hidden" id="app">
+  <div class="app" id="app">
     <!-- Top bar -->
     <nav class="topbar" aria-label="Hauptnavigation">
       <div class="topbar-left">
@@ -421,19 +421,6 @@
         href="impressum.html">Impressum</a></footer>
   </div>
 
-  <!-- Simple client-side password gate for informal testing -->
-  <div id="pwGate" class="pw-gate hidden" aria-hidden="true">
-    <div class="pw-panel">
-      <h2>Zugang geschützt</h2>
-      <p>Bitte Passwort eingeben, um die Seite zu sehen.</p>
-      <input id="pwInput" type="password" placeholder="Passwort" />
-      <div class="pw-actions">
-        <button id="pwOk" class="btn btn--primary">Öffnen</button>
-        <button id="pwCancel" class="btn btn--ghost">Abbrechen</button>
-      </div>
-      <p class="pw-hint">Hinweis: Diese Sperre ist nur für informelle Tests geeignet und nicht hochsicher.</p>
-    </div>
-  </div>
 
   <canvas id="confetti" class="confetti-canvas"></canvas>
   <div class="global-impressum"><a href="impressum.html">Impressum</a></div>
@@ -462,43 +449,6 @@
       <p>Bitte aktivieren Sie JavaScript, um RechtFlott zu nutzen.</p>
     </section>
   </noscript>
-  <script>
-    // Lightweight client-side gate: reads meta[name=site-password]. If empty, gate is disabled.
-    (function () {
-      // Support either `site-password` or legacy/custom meta name `Jura-2026`
-      const meta = document.querySelector('meta[name="site-password"], meta[name="Jura-2026"]');
-      if (!meta) return;
-      const pwd = (meta.content || "").toString();
-      if (!pwd) return; // disabled
-
-      const pwGate = document.getElementById('pwGate');
-      const pwInput = document.getElementById('pwInput');
-      const pwOk = document.getElementById('pwOk');
-      const pwCancel = document.getElementById('pwCancel');
-
-      function unlock() {
-        pwGate.classList.add('hidden');
-        pwGate.setAttribute('aria-hidden', 'true');
-        document.getElementById('app').classList.remove('hidden');
-      }
-
-      function showGate() {
-        // Always require password on every load — do not persist unlock state.
-        pwGate.classList.remove('hidden');
-        pwGate.setAttribute('aria-hidden', 'false');
-      }
-
-      pwOk.addEventListener('click', () => {
-        if (pwInput.value === pwd) unlock(); else { pwInput.value = ''; pwInput.focus(); }
-      });
-      pwInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') pwOk.click(); });
-      pwCancel.addEventListener('click', () => { window.location.href = 'about:blank'; });
-
-      // initially hide app until unlocked (always required)
-      document.getElementById('app').classList.add('hidden');
-      showGate();
-    })();
-  </script>
   <script src="app.js?v=4"></script>
 </body>
 

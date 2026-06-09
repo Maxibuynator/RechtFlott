@@ -1,0 +1,28 @@
+# Build/Dev-Tools nicht deployen
+scripts/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pytest_cache/
+
+# Environment
+.env
+
+# Editor
+.vscode/
+.idea/
+.github/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.log
+*.tmp
+
+# Duplicate working copy
+RechtFlott/
